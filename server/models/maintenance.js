@@ -1,0 +1,30 @@
+const mongoose = require("mongoose");
+
+const maintenaceSchema = new mongoose.Schema({
+  tenant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "tenant",
+    required: true,
+  },
+  date: {
+    type: Date,
+  },
+  issue: {
+    type: String,
+  },
+  status: {
+    type: String,
+  },
+  location: {
+    type: String,
+  },
+  media: {
+    type: [],
+  },
+});
+
+module.exports = Maintenance = mongoose.model(
+  "maintenance",
+  maintenaceSchema,
+  "maintenance"
+);

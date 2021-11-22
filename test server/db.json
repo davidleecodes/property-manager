@@ -1,0 +1,320 @@
+{
+  "properties": [
+    {
+      "id": "a",
+      "name": "5185 Balistreri Motorway",
+      "address": {
+        "city": "West Mabelland",
+        "street_name": "Pouros Prairie",
+        "street_address": "9981 Desiree Rapids",
+        "zip_code": "06799-8023",
+        "state": "California",
+        "country": "United States"
+      },
+      "units": 4,
+      "occupied_units": 2,
+      "cost": 200,
+      "image_url": "https://images.unsplash.com/photo-1618990908950-fd1a23294d11?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80"
+    },
+    {
+      "id": "b",
+      "name": "5069 Rosenbaum Plaza",
+      "address": {
+        "city": "Schillerside",
+        "street_name": "Newton Junctions",
+        "street_address": "8373 Flossie Skyway",
+        "zip_code": "25168",
+        "state": "Maine",
+        "country": "United States"
+      },
+      "units": 14,
+      "cost": 200,
+      "occupied_units": 10,
+      "image_url": "https://images.unsplash.com/photo-1613066696500-3bb0fcaceb67?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"
+    },
+    {
+      "id": "c",
+      "name": "6922 Wuckert Ford",
+      "address": {
+        "city": "New Marion",
+        "street_name": "Kunde Mountain",
+        "street_address": "254 Kling Shoal",
+        "zip_code": "40850",
+        "state": "Idaho",
+        "country": "United States"
+      },
+      "units": 2,
+      "cost": 200,
+      "occupied_units": 2,
+      "image_url": "https://images.unsplash.com/photo-1606073490680-4cd43bff6aaa?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1470&q=80"
+    }
+  ],
+
+  "users": [
+    {
+      "id": "a1",
+      "first_name": "Stephen",
+      "last_name": "Turner",
+      "image_url": "https://randomuser.me/api/portraits/med/women/23.jpg",
+      "phone_number": "494-401-9958",
+      "email": "stephen.turner@email.com",
+      "account_type": "tenant",
+      "username": "a1",
+      "password": "123"
+    },
+    {
+      "id": "b1",
+      "first_name": "Neva",
+      "last_name": "Athena",
+      "image_url": "https://randomuser.me/api/portraits/med/women/17.jpg",
+      "phone_number": "771-910-1783",
+      "email": "Neva@gmail.com",
+      "account_type": "tenant",
+      "username": "b1",
+      "password": "123"
+    },
+    {
+      "id": "c1",
+      "first_name": "Vin",
+      "last_name": "Des",
+      "image_url": "https://randomuser.me/api/portraits/med/men/12.jpg",
+      "phone_number": "902-495-7729",
+      "email": "Vin@gmail.com",
+      "account_type": "tenant",
+      "username": "c1",
+      "password": "123"
+    },
+    {
+      "id": "a2",
+      "first_name": "Kathlyn",
+      "last_name": "Lynch",
+      "image_url": "https://randomuser.me/api/portraits/med/women/59.jpg",
+      "phone_number": "285-142-2317 ",
+      "email": "Kathlyn@gmail.com",
+      "account_type": "tenant",
+      "username": "a2",
+      "password": "123"
+    },
+    {
+      "id": "b2",
+      "first_name": "Kelley",
+      "last_name": "Kuhlman",
+      "image_url": "https://randomuser.me/api/portraits/med/men/29.jpg",
+      "phone_number": "285-142-2317 ",
+      "email": "Kelley@gmail.com",
+      "account_type": "tenant",
+      "username": "b2",
+      "password": "123"
+    }
+  ],
+  "tenants": [
+    {
+      "id": "ta1",
+      "userId": "a1",
+      "propertyId": "a",
+      "unit": "1a",
+      "tenant_since": "5/20/2020"
+    },
+    {
+      "id": "tb1",
+      "userId": "b1",
+      "propertyId": "b",
+      "unit": "2b",
+      "tenant_since": "10/7/2020"
+    },
+    {
+      "id": "tc1",
+      "userId": "c1",
+      "propertyId": "c",
+      "unit": "2g",
+      "tenant_since": "1/30/2020"
+    },
+    {
+      "id": "ta2",
+      "userId": "a2",
+      "propertyId": "a",
+      "unit": "1c",
+      "tenant_since": "6/3/2020"
+    },
+    {
+      "id": "tb2",
+      "userId": "b2",
+      "propertyId": "b",
+      "unit": "1c",
+      "tenant_since": "7/28/2020"
+    }
+  ],
+  "maintenance": [
+    {
+      "date": "7/9/2021",
+      "id": 0,
+      "tenantId": "ta1",
+      "propertyId": "a",
+      "userId": "a1",
+      "issue": "leaky toliet",
+      "status": "open",
+      "media": [
+        "https://www.mrrooter.ca/images/blog/MRR-BlogGraphic-ToiletLeakFromBase-0618.jpg",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSx8QTlqr5P2h6lPKY4gI94u1XPFt2pmsTq-e-vda64Mcxb9T9TFcJKejAki7IHO3KbPxY&usqp=CAU"
+      ],
+      "location": "unit"
+    },
+    {
+      "date": "2/4/2021",
+      "id": 1,
+      "tenantId": "ta1",
+      "propertyId": "a",
+      "userId": "a1",
+
+      "issue": "no heat in bedroom",
+      "status": "pending",
+      "media": [
+        "https://www.brickunderground.com/sites/default/files/styles/blog_primary_image/public/blog/images/120418%20noises%20nyc%20radiators%20make_0.jpg"
+      ],
+      "location": "unit"
+    },
+    {
+      "date": "2/20/2021",
+      "id": 2,
+      "tenantId": "tb1",
+      "propertyId": "b",
+      "userId": "b1",
+
+      "issue": "peeling paint in bathroom",
+      "status": "close",
+      "media": [
+        "https://tribblepainting.com/wp-content/uploads/2019/07/Peeling-ceiling-paint-in-need-of-painting-600x450.jpg"
+      ],
+      "location": "unit"
+    },
+    {
+      "date": "12/7/2020",
+      "id": 3,
+      "tenantId": "tc1",
+      "propertyId": "c",
+      "userId": "c1",
+
+      "issue": "door bell not working",
+      "status": "open",
+      "media": ["https://i.redd.it/rib4twzb1va51.jpg"],
+      "location": "unit"
+    },
+    {
+      "date": "12/31/2020",
+      "id": 4,
+      "tenantId": "ta2",
+      "propertyId": "a",
+      "userId": "a2",
+
+      "issue": "light flickering in stairwell",
+      "status": "close",
+      "media": ["https://i.stack.imgur.com/x7Okv.jpg"],
+      "location": "common"
+    },
+    {
+      "date": "5/22/2021",
+      "id": 5,
+      "tenantId": "ta2",
+      "propertyId": "a",
+      "userId": "a2",
+
+      "issue": "mice problem",
+      "status": "pending",
+      "media": [
+        "https://www.thenews.com.pk//assets/uploads/updates/2019-02-09/429673_8821659_rats_updates.jpg"
+      ],
+      "location": "common"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "ia1_1",
+      "tenantId": "ta1",
+      "propertyId": "a",
+      "userId": "a1",
+      "amount": "2000",
+      "sent_date": "11/20/2021",
+      "due_date": "11/30/2021",
+      "paid_date": "10/25/2021",
+      "is_late": false
+    },
+    {
+      "id": "ia1_2",
+      "tenantId": "ta1",
+      "propertyId": "a",
+      "userId": "a1",
+
+      "amount": "2000",
+      "sent_date": "9/20/2021",
+      "due_date": "9/30/2021",
+      "paid_date": "9/25/2021",
+      "is_late": false
+    },
+    {
+      "id": "ia1_3",
+      "tenantId": "ta1",
+      "propertyId": "a",
+      "userId": "a1",
+      "amount": "2000",
+      "sent_date": "8/20/2021",
+      "due_date": "8/30/2021",
+      "paid_date": "8/25/2021",
+      "is_late": false
+    },
+    {
+      "id": "ia2_1",
+      "tenantId": "ta2",
+      "propertyId": "a",
+      "userId": "a2",
+      "amount": "2000",
+      "sent_date": "10/20/2021",
+      "due_date": "10/30/2021",
+      "paid_date": "11/15/2021",
+      "is_late": true
+    },
+    {
+      "id": "ia2_2",
+      "tenantId": "ta2",
+      "propertyId": "a",
+      "userId": "a2",
+
+      "amount": "2000",
+      "sent_date": "9/20/2021",
+      "due_date": "9/30/2021",
+      "paid_date": "",
+      "is_late": null
+    },
+    {
+      "id": "ia2_3",
+      "tenantId": "ta2",
+      "propertyId": "a",
+      "userId": "a2",
+      "amount": "2000",
+      "sent_date": "11/20/2021",
+      "due_date": "11/30/2021",
+      "paid_date": "",
+      "is_late": null
+    }
+  ],
+
+  "leases": [
+    {
+      "id": "la1_1",
+      "tenantId": "ta1",
+      "propertyId": "a",
+      "userId": "a1",
+      "monthy_rent": "2000",
+      "start_date": "1/20/2020",
+      "end_date": "1/30/2022"
+    },
+    {
+      "id": "la1_2",
+      "tenantId": "ta2",
+      "propertyId": "a",
+      "userId": "a2",
+      "monthy_rent": "2000",
+      "start_date": "1/20/2020",
+      "end_date": "1/30/2022"
+    }
+  ]
+}
