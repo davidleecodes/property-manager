@@ -1,0 +1,69 @@
+import React from "react";
+import ListItemText from "@mui/material/ListItemText";
+import Typography from "@mui/material/Typography";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import SideNav from "../../components/SideNav";
+
+export default function PropertiesSideNav({ selectedId, data }) {
+  console.log(selectedId, data);
+  const itemContent = (property) => (
+    <React.Fragment>
+      <ListItemIcon sx={{ paddingRight: "2ch" }}>
+        <img
+          alt={property.name}
+          src={property.image_url}
+          style={{ width: "100px", height: "60px", objectFit: "cover" }}
+          loading="lazy"
+        />
+      </ListItemIcon>
+
+      <ListItemText
+        primary={property.name}
+        secondary={
+          <React.Fragment>
+            <Typography
+              sx={{ display: "block" }}
+              component="span"
+              variant="body2"
+              color="text.primary"
+            >
+              Units:{property.units}
+            </Typography>
+            <Typography
+              sx={{ display: "block" }}
+              component="span"
+              variant="body2"
+              color="text.primary"
+            >
+              Availability:{property.units - property.occupied_units}
+            </Typography>
+          </React.Fragment>
+        }
+      />
+    </React.Fragment>
+  );
+  const sortParams = [
+    { label: "name", terms: [(item) => item.name] },
+    {
+      label: "units",
+      terms: [(item) => item.units],
+    },
+  ];
+  const searchParms = (item) => item.name;
+  const collapsedText = {
+    primary: (item) => item.name,
+    secondary: (item) => `${item.units} units`,
+  };
+
+  return (
+    <SideNav
+      selectedId={selectedId}
+      data={data}
+      path={"properties"}
+      itemContent={itemContent}
+      sortParams={sortParams}
+      searchParms={searchParms}
+      collapsedText={collapsedText}
+    />
+  );
+}

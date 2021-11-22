@@ -1,0 +1,58 @@
+import React from "react";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import { Avatar } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import Link from "@mui/material/Link";
+
+export default function TenantItem({ tenant, user }) {
+  const fullName = (user) => {
+    return `${user.first_name}  ${user.last_name}`;
+  };
+
+  return (
+    <Grid item sx={{ display: "flex" }}>
+      <Grid item sx={{ mr: 1 }}>
+        <Link
+          underline="none"
+          component={RouterLink}
+          to={`/tenants/${tenant.id}`}
+        >
+          <Avatar
+            sx={{ marginRight: "1em", width: 60, height: 60 }}
+            alt={fullName(user)}
+            src={user.image_url}
+          />
+        </Link>
+      </Grid>
+      <Grid item>
+        <Typography variant="body1" color="primary">
+          {fullName(user)}
+        </Typography>
+        <Typography
+          sx={{ display: "block" }}
+          variant="body2"
+          color="text.primary"
+        >
+          {user.phone_number}
+        </Typography>
+        <Typography
+          sx={{ display: "block" }}
+          component="span"
+          variant="body2"
+          color="text.primary"
+        >
+          {user.email}
+        </Typography>
+        <Typography
+          sx={{ display: "block" }}
+          component="span"
+          variant="body2"
+          color="text.primary"
+        >
+          Unit: {tenant.unit}
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+}
