@@ -20,7 +20,7 @@ export default function PropertyItem({ property }) {
         <Link
           underline="none"
           component={RouterLink}
-          to={`/properties/${property.id}`}
+          to={`/properties/${property._id}`}
         >
           <img
             alt={property.name}

@@ -1,29 +1,23 @@
 import serverPath from "./server";
 
-export async function getTenantsForProperty(propertyId) {
+export async function getLeases() {
   const fetchOptions = {
     method: "GET",
     credentials: "include",
   };
-  return await fetch(
-    `${serverPath}/tenants?propertyId=${propertyId}&_expand=user`,
-    fetchOptions
-  )
+  return await fetch(`${serverPath}/lease`, fetchOptions)
     .then((res) => res.json())
     .catch(() => ({
       error: { message: "Unable to connect to server. Please try again" },
     }));
 }
 
-export async function getTenants() {
+export async function getLeaseForId(id) {
   const fetchOptions = {
     method: "GET",
     credentials: "include",
   };
-  return await fetch(
-    `${serverPath}/tenants?_expand=property&_expand=user`,
-    fetchOptions
-  )
+  return await fetch(`${serverPath}/lease/${id}`, fetchOptions)
     .then((res) => res.json())
     .catch(() => ({
       error: { message: "Unable to connect to server. Please try again" },

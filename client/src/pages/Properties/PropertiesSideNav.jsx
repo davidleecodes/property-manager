@@ -5,7 +5,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import SideNav from "../../components/SideNav";
 
 export default function PropertiesSideNav({ selectedId, data }) {
-  console.log(selectedId, data);
   const itemContent = (property) => (
     <React.Fragment>
       <ListItemIcon sx={{ paddingRight: "2ch" }}>

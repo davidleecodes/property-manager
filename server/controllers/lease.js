@@ -1,12 +1,12 @@
-const Maintenance = require("../models/maintenance");
+const Lease = require("../models/lease");
 const asyncHandler = require("express-async-handler");
 const decodeToken = require("../utils/decodeToken");
 
-//@route GET /maintenance
-//get list of maintenances
-exports.getMaintenances = asyncHandler(async (req, res) => {
+//@route GET /lease
+//get list of leases
+exports.getLeases = asyncHandler(async (req, res) => {
   try {
-    const MaintenaceList = await Maintenance.find()
+    const LeaseList = await Lease.find()
       .populate({
         path: "tenant",
         populate: {
@@ -16,23 +16,23 @@ exports.getMaintenances = asyncHandler(async (req, res) => {
       .populate({
         path: "property",
       });
-    if (MaintenaceList) {
-      res.status(200).json(MaintenaceList);
+    if (LeaseList) {
+      res.status(200).json(LeaseList);
     } else {
-      res.status(404).json({ message: "Maintenace Not Found" });
+      res.status(404).json({ message: "lease Not Found" });
     }
   } catch (error) {
     return res.status(500).json({ message: error });
   }
 });
 
-//@route GET /maintenance/:id
-//get maintenance for id
-exports.getMaintenanceForId = asyncHandler(async (req, res) => {
+//@route GET /lease/:id
+//get lease for id
+exports.getLeaseForId = asyncHandler(async (req, res) => {
   const id = req.params.id;
 
   try {
-    const maintenance = await Maintenance.findById(id)
+    const lease = await Lease.findById(id)
       .populate({
         path: "tenant",
         populate: {
@@ -43,10 +43,10 @@ exports.getMaintenanceForId = asyncHandler(async (req, res) => {
         path: "property",
       });
 
-    if (maintenance) {
-      res.status(200).json(maintenance);
+    if (lease) {
+      res.status(200).json(lease);
     } else {
-      res.status(404).json({ message: "maintenance Not Found" });
+      res.status(404).json({ message: "lease Not Found" });
     }
   } catch (error) {
     return res.status(500).json({ message: error });

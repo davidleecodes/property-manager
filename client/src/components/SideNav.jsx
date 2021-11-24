@@ -115,7 +115,7 @@ function Panel({
 
 export default function SideNav({
   selectedId,
-  data,
+  data = [],
   path,
   itemContent,
   sortParams,

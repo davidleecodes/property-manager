@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import PropertyItem from "../../components/PropertyItem";
 import TenantItem from "../../components/TenantItem";
 
-export default function Header({ maintenanceId, currentMaintenance }) {
+export default function Header({ currentMaintenance }) {
   return (
     <React.Fragment>
       <Grid item container spacing={3}>
@@ -12,10 +12,7 @@ export default function Header({ maintenanceId, currentMaintenance }) {
         )}
 
         {currentMaintenance.tenant && (
-          <TenantItem
-            tenant={currentMaintenance.tenant}
-            user={currentMaintenance.user}
-          />
+          <TenantItem tenant={currentMaintenance.tenant} />
         )}
       </Grid>
     </React.Fragment>

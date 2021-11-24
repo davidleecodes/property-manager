@@ -3,6 +3,7 @@ import SideNav from "../../components/SideNav";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import currencyformatter from "../../helpers/currencyFormatter";
+import dateFormatter from "./../../helpers/dateFormatter";
 
 export default function LeaseSideNav({ selectedId, data }) {
   const itemContent = (lease) => (
@@ -17,8 +18,8 @@ export default function LeaseSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              {`${lease.user.first_name} ${lease.user.last_name}`} |{" "}
-              {lease.location === "common" ? "common" : lease.tenant.unit}
+              {`${lease.tenant.user.first_name} ${lease.tenant.user.last_name}`}{" "}
+              | {lease.location === "common" ? "common" : lease.tenant.unit}
             </Typography>
             <Typography
               sx={{ display: "block" }}
@@ -26,7 +27,8 @@ export default function LeaseSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              {currencyformatter.format(lease.monthy_rent)} | {lease.end_date}
+              {currencyformatter.format(lease.monthly_rent)} |{" "}
+              {dateFormatter(lease.end_date)}
             </Typography>
           </React.Fragment>
         }
@@ -41,7 +43,8 @@ export default function LeaseSideNav({ selectedId, data }) {
   ];
   const searchParms = (item) => item.name;
   const collapsedText = {
-    primary: (item) => `${item.user.first_name} ${item.user.last_name}`,
+    primary: (item) =>
+      `${item.tenant.user.first_name} ${item.tenant.user.last_name}`,
     secondary: (item) => `${item.end_date}`,
   };
   return (

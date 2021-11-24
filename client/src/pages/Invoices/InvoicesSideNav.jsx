@@ -2,6 +2,7 @@ import React from "react";
 import SideNav from "../../components/SideNav";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
+import dateFormatter from "./../../helpers/dateFormatter";
 
 export default function InvoiceSideNav({ selectedId, data }) {
   const itemContent = (invoice) => (
@@ -16,8 +17,8 @@ export default function InvoiceSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              {`${invoice.user.first_name} ${invoice.user.last_name}`} |{" "}
-              {invoice.location === "common" ? "common" : invoice.tenant.unit}
+              {`${invoice.tenant.user.first_name} ${invoice.tenant.user.last_name}`}{" "}
+              | {invoice.location === "common" ? "common" : invoice.tenant.unit}
             </Typography>
             <Typography
               sx={{ display: "block" }}
@@ -25,7 +26,8 @@ export default function InvoiceSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              {invoice.due_date} | {invoice.paid_date ? "paid" : "pending"}
+              {dateFormatter(invoice.due_date)} |{" "}
+              {invoice.paid_date ? "paid" : "pending"}
             </Typography>
           </React.Fragment>
         }
@@ -33,7 +35,6 @@ export default function InvoiceSideNav({ selectedId, data }) {
     </React.Fragment>
   );
   const sortParams = [
-    // { label: "date", terms: [(item) => item.date] },
     {
       label: "location",
       terms: [(item) => item.property.name, (item) => item.tenant.unit],
@@ -41,7 +42,8 @@ export default function InvoiceSideNav({ selectedId, data }) {
   ];
   const searchParms = (item) => item.name;
   const collapsedText = {
-    primary: (item) => `${item.user.first_name} ${item.user.last_name}`,
+    primary: (item) =>
+      `${item.tenant.user.first_name} ${item.tenant.user.last_name}`,
     secondary: (item) => `${item.due_date}`,
   };
   return (

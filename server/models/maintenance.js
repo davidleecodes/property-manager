@@ -6,6 +6,11 @@ const maintenaceSchema = new mongoose.Schema({
     ref: "tenant",
     required: true,
   },
+  property: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "property",
+    required: true,
+  },
   date: {
     type: Date,
   },

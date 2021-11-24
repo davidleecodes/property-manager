@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./themes/theme";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Properties from "./pages/Properties/Properties";
 import Dashboard from "./pages/Dashboard";
@@ -22,7 +22,7 @@ function App() {
           <Route path="/properties/:id" component={Properties} />
           <Route exact path="/properties" component={Properties} />
 
-          {/* <Route exact path="/tenants/:id" component={Tenants} />
+          <Route exact path="/tenants/:id" component={Tenants} />
           <Route exact path="/tenants" component={Tenants} />
 
           <Route exact path="/maintenances/:id" component={Maintenances} />
@@ -32,9 +32,12 @@ function App() {
           <Route exact path="/invoices" component={Invoices} />
 
           <Route exact path="/leases/:id" component={Leases} />
-          <Route exact path="/leases" component={Leases} /> */}
+          <Route exact path="/leases" component={Leases} />
 
           <Route exact path="/login" component={Login} />
+          <Route path="*">
+            <Redirect to="/" />
+          </Route>
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

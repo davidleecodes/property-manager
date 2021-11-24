@@ -10,23 +10,15 @@ const logger = require("morgan");
 const propertyRouter = require("./routes/property");
 const tenantRouter = require("./routes/tenant");
 const maintenanceRouter = require("./routes/maintenance");
-// const userRouter = require("./routes/user");
-// const requestRouter = require("./routes/request");
-// const profileRouter = require("./routes/profile");
-// const notificationsRouter = require("./routes/notifications");
-// const messageRouter = require("./routes/message");
-// const paymentRouter = require("./routes/payment");
-// const reviewRouter = require("./routes/review");
+const invoiceRouter = require("./routes/invoice");
+const leaseRouter = require("./routes/lease");
+
 const { json, urlencoded } = express;
 const cors = require("cors");
-// const { appSocket } = require("./socket/index");
 
 connectDB();
 const app = express();
 const server = http.createServer(app);
-
-//socket initialization
-// appSocket(server);
 
 if (process.env.NODE_ENV === "development") {
   app.use(logger("dev"));
@@ -45,13 +37,8 @@ app.use(cors(corsConfig));
 app.use("/property", propertyRouter);
 app.use("/tenant", tenantRouter);
 app.use("/maintenance", maintenanceRouter);
-// app.use("/users", userRouter);
-// app.use("/request", requestRouter);
-// app.use("/profile", profileRouter);
-// app.use("/notifications", notificationsRouter);
-// app.use("/message", messageRouter);
-// app.use("/payment", paymentRouter);
-// app.use("/review", reviewRouter);
+app.use("/invoice", invoiceRouter);
+app.use("/lease", leaseRouter);
 
 app.get("/", (req, res) => {
   res.send("API is running");

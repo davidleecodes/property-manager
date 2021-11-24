@@ -1,50 +1,47 @@
 import React, { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import Header from "./PropertyHeader";
-import { getTenantsForProperty } from "../../helpers/APICalls/tenants";
-import { getMaintenanceForProperty } from "../../helpers/APICalls/maintenances";
-import { getInvoicesForProperty } from "../../helpers/APICalls/invoices";
-import { getLeasesForProperty } from "../../helpers/APICalls/leases";
-import { getPropertyForId } from "../../helpers/APICalls/properties";
+import { getPropertyForId } from "../../helpers/APICalls/property";
 import TabTableView from "../../components/TabTableView";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
 import moment from "moment";
 import TenantAvatarCell from "../../components/TenantAvatarCell";
 import currencyformatter from "../../helpers/currencyFormatter";
+import LoadingView from "../../components/LoadingView";
+import dateFormatter from "./../../helpers/dateFormatter";
 
-export default function PropertyView({ propertyId, currentProperty }) {
+export default function PropertyView({ propertyId }) {
+  const [tenantMap, setTenantMap] = useState();
   const [tenantData, setTenantData] = useState([]);
   const [maintenanceData, setMaintenanceData] = useState([]);
   const [invoiceData, setInvoiceData] = useState([]);
   const [leaseData, setleaseData] = useState([]);
-  const [propertyData, setPropertyData] = useState([]);
+  const [propertyData, setPropertyData] = useState();
 
   useEffect(() => {
-    // getTenantsForProperty(propertyId).then((res) => {
-    //   setTenantData(res);
-    // });
-    // getMaintenanceForProperty(propertyId).then((res) => {
-    //   setMaintenanceData(res);
-    // });
-    // getInvoicesForProperty(propertyId).then((res) => {
-    //   setInvoiceData(res);
-    // });
-    // getLeasesForProperty(propertyId).then((res) => {
-    //   setleaseData(res);
-    // });
-    getPropertyForId(propertyId).then((res) => {
-      console.log(res);
-      setPropertyData(res);
-    });
+    if (propertyId) {
+      getPropertyForId(propertyId).then((res) => {
+        setPropertyData(res);
+        if (!res.message) {
+          let tenants = {};
+          res.tenants.forEach((t) => {
+            tenants[t._id] = t;
+          });
+          setTenantMap(tenants);
+          setTenantData(res.tenants);
+          setMaintenanceData(res.maintenances);
+          setInvoiceData(res.invoices);
+          setleaseData(res.leases);
+        }
+      });
+    }
   }, [propertyId]);
 
   const tenantColumns = [
     {
       label: "Name",
-      content: (tenant) => (
-        <TenantAvatarCell tenant={tenant} user={tenant.user} />
-      ),
+      content: (tenant) => <TenantAvatarCell tenant={tenant} />,
       hideLabel: true,
     },
     {
@@ -64,6 +61,7 @@ export default function PropertyView({ propertyId, currentProperty }) {
       content: (tenant) => <span>{tenant.isLate ? "late" : "paid"}</span>,
     },
   ];
+
   const unpaidTenantsData = tenantData.filter((tenant) => tenant.isLate);
   const tentantTabs = [
     {
@@ -82,7 +80,7 @@ export default function PropertyView({ propertyId, currentProperty }) {
   const maintenanceColumns = [
     {
       label: "Date",
-      content: (maintenance) => <span>{maintenance.date}</span>,
+      content: (maintenance) => <span>{dateFormatter(maintenance.date)}</span>,
     },
     {
       label: "Issue",
@@ -94,7 +92,8 @@ export default function PropertyView({ propertyId, currentProperty }) {
         <span>
           {maintenance.location === "common"
             ? "common"
-            : maintenance.tenant.unit}
+            : tenantMap[maintenance.tenant] &&
+              tenantMap[maintenance.tenant].unit}
         </span>
       ),
     },
@@ -102,7 +101,7 @@ export default function PropertyView({ propertyId, currentProperty }) {
     {
       label: "Name",
       content: (maintenance) => (
-        <TenantAvatarCell tenant={maintenance.tenant} user={maintenance.user} />
+        <TenantAvatarCell tenant={tenantMap[maintenance.tenant]} />
       ),
       hideLabel: true,
     },
@@ -118,7 +117,7 @@ export default function PropertyView({ propertyId, currentProperty }) {
         <Link
           underline="none"
           component={RouterLink}
-          to={`/maintenances/${maintenance.id}`}
+          to={`/maintenances/${maintenance._id}`}
         >
           <span>view</span>
         </Link>
@@ -141,21 +140,24 @@ export default function PropertyView({ propertyId, currentProperty }) {
   ];
 
   const maintenanceSortParams = [
-    { label: "date", terms: [(item) => item.date] },
-    { label: "name", terms: [(item) => item.user.first_name] },
-    { label: "unit", terms: [(item) => item.tenant.unit] },
+    { label: "date", terms: [(item) => dateFormatter(item.date)] },
+    {
+      label: "name",
+      terms: [(item) => tenantMap[item.tenant].user.first_name],
+    },
+    { label: "unit", terms: [(item) => tenantMap[item.tenant].unit] },
   ];
 
   const invoiceColumns = [
     {
       label: "Due Date",
-      content: (invoice) => <span>{invoice.due_date}</span>,
+      content: (invoice) => <span>{dateFormatter(invoice.due_date)}</span>,
     },
 
     {
       label: "Name",
       content: (invoice) => (
-        <TenantAvatarCell tenant={invoice.tenant} user={invoice.user} />
+        <TenantAvatarCell tenant={tenantMap[invoice.tenant]} />
       ),
       hideLabel: true,
     },
@@ -168,7 +170,9 @@ export default function PropertyView({ propertyId, currentProperty }) {
     {
       label: "Paid Date",
       content: (invoice) => (
-        <span>{`${invoice.paid_date} ${invoice.is_late ? "(late)" : ""}`}</span>
+        <span>{`${dateFormatter(invoice.paid_date)} ${
+          invoice.is_late ? "(late)" : ""
+        }`}</span>
       ),
     },
     {
@@ -177,7 +181,7 @@ export default function PropertyView({ propertyId, currentProperty }) {
         <Link
           underline="none"
           component={RouterLink}
-          to={`/invoices/${invoice.id}`}
+          to={`/invoices/${invoice._id}`}
         >
           <span>view</span>
         </Link>
@@ -201,31 +205,32 @@ export default function PropertyView({ propertyId, currentProperty }) {
   ];
 
   const invoiceSortParams = [
-    { label: "date", terms: [(item) => item.paid_date] },
-    { label: "name", terms: [(item) => item.user.first_name] },
+    { label: "date", terms: [(item) => dateFormatter(item.paid_date)] },
+    {
+      label: "name",
+      terms: [(item) => tenantMap[item.tenant].user.first_name],
+    },
   ];
 
   const leaseColumns = [
     {
       label: "Name",
-      content: (lease) => (
-        <TenantAvatarCell tenant={lease.tenant} user={lease.user} />
-      ),
+      content: (lease) => <TenantAvatarCell tenant={tenantMap[lease.tenant]} />,
       hideLabel: true,
     },
     {
-      label: "monthy_rent",
+      label: "monthly_rent",
       content: (lease) => (
-        <span>{currencyformatter.format(lease.monthy_rent)}</span>
+        <span>{currencyformatter.format(lease.monthly_rent)}</span>
       ),
     },
     {
       label: "start_date",
-      content: (lease) => <span>{lease.start_date}</span>,
+      content: (lease) => <span>{dateFormatter(lease.start_date)}</span>,
     },
     {
       label: "end_date",
-      content: (lease) => <span>{lease.end_date}</span>,
+      content: (lease) => <span>{dateFormatter(lease.end_date)}</span>,
     },
     {
       label: "",
@@ -233,7 +238,7 @@ export default function PropertyView({ propertyId, currentProperty }) {
         <Link
           underline="none"
           component={RouterLink}
-          to={`/leases/${lease.id}`}
+          to={`/leases/${lease._id}`}
         >
           <span>view</span>
         </Link>
@@ -256,40 +261,47 @@ export default function PropertyView({ propertyId, currentProperty }) {
   ];
 
   const leaseSortParams = [
-    { label: "date", terms: [(item) => item.end_date] },
-    { label: "name", terms: [(item) => item.user.first_name] },
+    { label: "date", terms: [(item) => dateFormatter(item.end_date)] },
+    {
+      label: "name",
+      terms: [(item) => tenantMap[item.tenant].user.first_name],
+    },
   ];
   return (
-    <Grid container spacing={3}>
-      {/* <Header
-        propertyId={propertyId}
-        currentProperty={currentProperty}
-        invoiceData={invoiceData}
-      />
-      <TabTableView
-        label={"Tenants"}
-        tabs={tentantTabs}
-        columns={tenantColumns}
-        sortParams={tenantSortParams}
-      ></TabTableView>
-      <TabTableView
-        label={"Maintenances"}
-        tabs={maintenanceTabs}
-        columns={maintenanceColumns}
-        sortParams={maintenanceSortParams}
-      ></TabTableView>
-      <TabTableView
-        label={"Invoices"}
-        tabs={invoiceTabs}
-        columns={invoiceColumns}
-        sortParams={invoiceSortParams}
-      ></TabTableView>
-      <TabTableView
-        label={"Leases"}
-        tabs={leaseTabs}
-        columns={leaseColumns}
-        sortParams={leaseSortParams}
-      ></TabTableView> */}
-    </Grid>
+    <LoadingView
+      data={propertyData}
+      loadingState={(data) => !data}
+      notFoundState={(data) => data.message}
+    >
+      {propertyData && (
+        <Grid container spacing={3}>
+          <Header currentProperty={propertyData} invoiceData={invoiceData} />
+          <TabTableView
+            label={"Tenants"}
+            tabs={tentantTabs}
+            columns={tenantColumns}
+            sortParams={tenantSortParams}
+          ></TabTableView>
+          <TabTableView
+            label={"Maintenances"}
+            tabs={maintenanceTabs}
+            columns={maintenanceColumns}
+            sortParams={maintenanceSortParams}
+          ></TabTableView>
+          <TabTableView
+            label={"Invoices"}
+            tabs={invoiceTabs}
+            columns={invoiceColumns}
+            sortParams={invoiceSortParams}
+          ></TabTableView>
+          <TabTableView
+            label={"Leases"}
+            tabs={leaseTabs}
+            columns={leaseColumns}
+            sortParams={leaseSortParams}
+          ></TabTableView>
+        </Grid>
+      )}
+    </LoadingView>
   );
 }

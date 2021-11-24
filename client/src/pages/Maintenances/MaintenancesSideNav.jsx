@@ -2,6 +2,7 @@ import React from "react";
 import SideNav from "../../components/SideNav";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
+import dateFormatter from "./../../helpers/dateFormatter";
 
 export default function MaintenanceSideNav({ selectedId, data }) {
   const itemContent = (maintenance) => (
@@ -27,7 +28,7 @@ export default function MaintenanceSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              {maintenance.date} | {maintenance.status}
+              {dateFormatter(maintenance.date)} | {maintenance.status}
             </Typography>
           </React.Fragment>
         }

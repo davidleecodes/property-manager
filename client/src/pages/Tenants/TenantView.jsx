@@ -1,37 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
 import TenantHeader from "./TenantHeader";
-import { getMaintenanceForTenant } from "../../helpers/APICalls/maintenances";
-import { getInvoicesForTenant } from "../../helpers/APICalls/invoices";
-import { getLeasesForTenant } from "../../helpers/APICalls/leases";
-import TableView from "../../components/TableView";
-import Paper from "@mui/material/Paper";
+import { getTenantForId } from "../../helpers/APICalls/tenant";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
-import Typography from "@mui/material/Typography";
 import currencyformatter from "../../helpers/currencyFormatter";
+import LoadingView from "../../components/LoadingView";
+import SingleTableView from "../../components/SingleTableView";
+import dateFormatter from "./../../helpers/dateFormatter";
 
-export default function TenantView({ tenantId, currentTenant }) {
+export default function TenantView({ tenantId }) {
   const [maintenanceData, setMaintenanceData] = useState([]);
   const [invoiceData, setInvoiceData] = useState([]);
   const [leaseData, setLeaseData] = useState([]);
+  const [tenantData, setTenantData] = useState();
 
   useEffect(() => {
-    getMaintenanceForTenant(tenantId).then((res) => {
-      setMaintenanceData(res);
-    });
-    getInvoicesForTenant(tenantId).then((res) => {
-      setInvoiceData(res);
-    });
-    getLeasesForTenant(tenantId).then((res) => {
-      setLeaseData(res);
-    });
+    if (tenantId) {
+      getTenantForId(tenantId).then((res) => {
+        setTenantData(res);
+        setMaintenanceData(res.maintenances);
+        setInvoiceData(res.invoices);
+        setLeaseData(res.leases);
+      });
+    }
   }, [tenantId]);
 
   const maintenanceColumns = [
     {
       label: "Date",
-      content: (maintenance) => <span>{maintenance.date}</span>,
+      content: (maintenance) => <span>{dateFormatter(maintenance.date)}</span>,
     },
 
     {
@@ -42,7 +40,7 @@ export default function TenantView({ tenantId, currentTenant }) {
       label: "Location",
       content: (maintenance) => (
         <span>
-          {maintenance.location === "common" ? "common" : currentTenant.unit}
+          {maintenance.location === "common" ? "common" : tenantData.unit}
         </span>
       ),
     },
@@ -57,7 +55,7 @@ export default function TenantView({ tenantId, currentTenant }) {
         <Link
           underline="none"
           component={RouterLink}
-          to={`/maintenances/${maintenance.id}`}
+          to={`/maintenances/${maintenance._id}`}
         >
           <span>view</span>
         </Link>
@@ -74,11 +72,11 @@ export default function TenantView({ tenantId, currentTenant }) {
     },
     {
       label: "due date",
-      content: (invoice) => <span>{invoice.due_date}</span>,
+      content: (invoice) => <span>{dateFormatter(invoice.due_date)}</span>,
     },
     {
       label: "paid date ",
-      content: (invoice) => <span>{invoice.paid_date}</span>,
+      content: (invoice) => <span>{dateFormatter(invoice.paid_date)}</span>,
     },
     {
       label: "",
@@ -86,7 +84,7 @@ export default function TenantView({ tenantId, currentTenant }) {
         <Link
           underline="none"
           component={RouterLink}
-          to={`/invoices/${invoice.id}`}
+          to={`/invoices/${invoice._id}`}
         >
           <span>view</span>
         </Link>
@@ -96,18 +94,18 @@ export default function TenantView({ tenantId, currentTenant }) {
 
   const leaseColumns = [
     {
-      label: "monthy rent",
+      label: "monthly rent",
       content: (lease) => (
-        <span>{currencyformatter.format(lease.monthy_rent)}</span>
+        <span>{currencyformatter.format(lease.monthly_rent)}</span>
       ),
     },
     {
       label: "start date",
-      content: (lease) => <span>{lease.start_date}</span>,
+      content: (lease) => <span>{dateFormatter(lease.start_date)}</span>,
     },
     {
       label: "end date ",
-      content: (lease) => <span>{lease.end_date}</span>,
+      content: (lease) => <span>{dateFormatter(lease.end_date)}</span>,
     },
     {
       label: "",
@@ -115,7 +113,7 @@ export default function TenantView({ tenantId, currentTenant }) {
         <Link
           underline="none"
           component={RouterLink}
-          to={`/leases/${lease.id}`}
+          to={`/leases/${lease._id}`}
         >
           <span>view</span>
         </Link>
@@ -124,32 +122,34 @@ export default function TenantView({ tenantId, currentTenant }) {
   ];
 
   return (
-    <Grid container spacing={3}>
-      <TenantHeader tenantId={tenantId} currentTenant={currentTenant} />
-      <Grid item xs={12}>
-        <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-          <Typography component="h2" variant="h6" color="primary">
-            Maintances
-          </Typography>
-          <TableView
-            data={maintenanceData}
-            columns={maintenanceColumns}
-          ></TableView>
-        </Paper>
-        <Paper sx={{ p: 2, display: "flex", flexDirection: "column", mt: 2 }}>
-          <Typography component="h2" variant="h6" color="primary">
-            Invoices
-          </Typography>
-          <TableView data={invoiceData} columns={invoiceColumns}></TableView>
-        </Paper>
+    <LoadingView
+      data={tenantData}
+      loadingState={(data) => !data}
+      notFoundState={(data) => data.message}
+    >
+      {tenantData && (
+        <Grid container spacing={3}>
+          <TenantHeader currentTenant={tenantData} />
+          <Grid item xs={12}>
+            <SingleTableView
+              label={"Maintenance"}
+              data={maintenanceData}
+              columns={maintenanceColumns}
+            />
+            <SingleTableView
+              label={"Invoices"}
+              data={invoiceData}
+              columns={invoiceColumns}
+            />
 
-        <Paper sx={{ p: 2, display: "flex", flexDirection: "column", mt: 2 }}>
-          <Typography component="h2" variant="h6" color="primary">
-            Leases
-          </Typography>
-          <TableView data={leaseData} columns={leaseColumns}></TableView>
-        </Paper>
-      </Grid>
-    </Grid>
+            <SingleTableView
+              label={"Leases"}
+              data={leaseData}
+              columns={leaseColumns}
+            />
+          </Grid>
+        </Grid>
+      )}
+    </LoadingView>
   );
 }

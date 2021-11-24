@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getMaintenanceForId } from "../../helpers/APICalls/maintenance";
 import { Grid } from "@mui/material";
 import MaintenanceHeader from "./MaintenanceHeader";
-import Paper from "@mui/material/Paper";
-import TableView from "../../components/TableView";
-import Typography from "@mui/material/Typography";
+import LoadingView from "../../components/LoadingView";
+import SingleTableView from "../../components/SingleTableView";
+import dateFormatter from "./../../helpers/dateFormatter";
 
-export default function MaintenanceView({ maintenanceId, currentMaintenance }) {
+export default function MaintenanceView({ maintenanceId }) {
+  const [maintenanceData, setMaintenanceData] = useState();
+  useEffect(() => {
+    if (maintenanceId) {
+      getMaintenanceForId(maintenanceId).then((res) => {
+        setMaintenanceData(res);
+      });
+    }
+  }, [maintenanceId]);
+
   const maintenanceColumns = [
     {
       label: "Date",
-      content: (maintenance) => <span>{maintenance.date}</span>,
+      content: (maintenance) => <span>{dateFormatter(maintenance.date)}</span>,
     },
 
     {
@@ -31,43 +41,43 @@ export default function MaintenanceView({ maintenanceId, currentMaintenance }) {
       content: (maintenance) => <span>{maintenance.status}</span>,
     },
   ];
-  return (
-    <Grid container spacing={3}>
-      <MaintenanceHeader
-        maintenanceId={maintenanceId}
-        currentMaintenance={currentMaintenance}
-      />
-      <Grid item xs={12}>
-        <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-          <Typography component="h2" variant="h6" color="primary">
-            Maintance
-          </Typography>
-          <TableView
-            data={[currentMaintenance]}
-            columns={maintenanceColumns}
-          ></TableView>
-          {/* </Paper> */}
 
-          {/* <Paper sx={{ p: 2, display: "flex", flexDirection: "column", mt: 2 }}> */}
-          <Grid container spacing={0.5} sx={{ mt: 2 }}>
-            {currentMaintenance.media &&
-              currentMaintenance.media.map((media, idx) => (
-                <Grid item sx={{ mr: 1 }} key={idx}>
-                  <img
-                    src={media}
-                    alt={currentMaintenance.issue}
-                    loading="lazy"
-                    style={{
-                      width: "200px",
-                      height: "200px",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Grid>
-              ))}
+  return (
+    <LoadingView
+      data={maintenanceData}
+      loadingState={(data) => !data}
+      notFoundState={(data) => data.message}
+    >
+      {maintenanceData && (
+        <Grid container spacing={3}>
+          <MaintenanceHeader currentMaintenance={maintenanceData} />
+          <Grid item xs={12}>
+            <SingleTableView
+              label={"Maintenance"}
+              data={[maintenanceData]}
+              columns={maintenanceColumns}
+            >
+              <Grid container spacing={0.5} sx={{ mt: 2 }}>
+                {maintenanceData.media &&
+                  maintenanceData.media.map((media, idx) => (
+                    <Grid item sx={{ mr: 1 }} key={idx}>
+                      <img
+                        src={media}
+                        alt={maintenanceData.issue}
+                        loading="lazy"
+                        style={{
+                          width: "200px",
+                          height: "200px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Grid>
+                  ))}
+              </Grid>
+            </SingleTableView>
           </Grid>
-        </Paper>
-      </Grid>
-    </Grid>
+        </Grid>
+      )}
+    </LoadingView>
   );
 }

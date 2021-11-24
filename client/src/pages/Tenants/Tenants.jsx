@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { getTenants } from "../../helpers/APICalls/tenants";
+import { getTenants } from "../../helpers/APICalls/tenant";
 import TenantView from "./TenantView";
 import PgSideAndView from "../../components/PgSideAndView";
 import TenantSideNav from "./TenantsSideNav";
 
 export default function Tenants() {
   let { id } = useParams();
-  const [currentTenantId, setCurrentTenantId] = useState(id);
-  const [currentTenant, setCurrentTenant] = useState([]);
+  const [currentTenantId, setCurrentTenantId] = useState();
 
   const [tenantData, setTenantData] = useState([]);
   let history = useHistory();
@@ -20,14 +19,9 @@ export default function Tenants() {
 
   useEffect(() => {
     if (!id && tenantData.length > 0) {
-      setCurrentTenantId(tenantData[0].id);
-      setCurrentTenant(tenantData[0]);
-      history.replace(`/tenants/${tenantData[0].id}`);
+      setCurrentTenantId(tenantData[0]._id);
+      history.replace(`/tenants/${tenantData[0]._id}`);
     } else if (id && tenantData.length > 0) {
-      setCurrentTenantId(id);
-      let curr = tenantData.filter((p) => p.id.toString() === id)[0];
-      setCurrentTenant(curr);
-    } else if (id) {
       setCurrentTenantId(id);
     }
   }, [history, tenantData, currentTenantId, id]);
@@ -35,9 +29,7 @@ export default function Tenants() {
   return (
     <PgSideAndView
       side={<TenantSideNav selectedId={id} data={tenantData} />}
-      view={
-        <TenantView tenantId={currentTenantId} currentTenant={currentTenant} />
-      }
+      view={<TenantView tenantId={currentTenantId} />}
     />
   );
 }

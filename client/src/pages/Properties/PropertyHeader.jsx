@@ -5,7 +5,7 @@ import moment from "moment";
 import PropertyItem from "../../components/PropertyItem";
 import currencyformatter from "../../helpers/currencyFormatter";
 
-export default function Header({ propertyId, currentProperty, invoiceData }) {
+export default function Header({ currentProperty, invoiceData }) {
   const currYear = moment().year();
   const currMonth = moment().month();
 
