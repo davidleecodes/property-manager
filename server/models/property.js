@@ -24,7 +24,6 @@ const addressSchema = new mongoose.Schema({
 const propertySchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
   },
   address: {
     type: addressSchema,
@@ -40,7 +39,7 @@ const propertySchema = new mongoose.Schema({
     type: Number,
   },
   units: {
-    type: Number,
+    type: [String],
   },
 });
 

@@ -1,5 +1,5 @@
 import moment from "moment";
 
-export default function dateformatter(date) {
+export default function dateFormatter(date) {
   return moment(date).format("ll");
 }

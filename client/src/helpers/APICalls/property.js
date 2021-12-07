@@ -23,3 +23,17 @@ export async function getPropertyForId(id) {
       error: { message: "Unable to connect to server. Please try again" },
     }));
 }
+
+export async function newProperty(data) {
+  const fetchOptions = {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  };
+  return await fetch(`${serverPath}/property/new`, fetchOptions)
+    .then((res) => res.json())
+    .catch(() => ({
+      error: { message: "Unable to connect to server. Please try again" },
+    }));
+}

@@ -47,3 +47,25 @@ exports.getPropertyForId = asyncHandler(async (req, res) => {
     return res.status(500).json({ message: error });
   }
 });
+
+//@route Post /property/new
+//post property
+exports.newProperty = asyncHandler(async (req, res) => {
+  const { name, address, image_url, units } = req.body;
+
+  const property = await Property.create({
+    name,
+    address,
+    image_url,
+    units,
+  });
+
+  if (property) {
+    res.status(201).json({
+      success: { property },
+    });
+  } else {
+    res.status(404);
+    throw new Error("Invalid request data");
+  }
+});
