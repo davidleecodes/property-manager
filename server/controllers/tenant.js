@@ -18,6 +18,9 @@ exports.getTenants = asyncHandler(async (req, res) => {
       })
       .populate({
         path: "user",
+      })
+      .populate({
+        path: "unit",
       });
 
     if (tenantList) {
@@ -42,6 +45,9 @@ exports.getTenantForId = asyncHandler(async (req, res) => {
       })
       .populate({
         path: "user",
+      })
+      .populate({
+        path: "unit",
       });
     const maintenanceList = await Maintenance.find({ tenant: id });
     const invoiceList = await Invoice.find({ tenant: id });

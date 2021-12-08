@@ -153,8 +153,8 @@ export default function UserForm() {
                         )[0].units
                       : [""]
                   }
-                  itemValue={(item) => item}
-                  itemLabel={(item) => item}
+                  itemValue={(item) => item.name}
+                  itemLabel={(item) => item.name}
                 />
               </Grid>
 

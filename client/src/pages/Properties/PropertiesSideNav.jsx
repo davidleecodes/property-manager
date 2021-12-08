@@ -26,7 +26,7 @@ export default function PropertiesSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              Units:{property.units}
+              Units:{property.units.length}
             </Typography>
             <Typography
               sx={{ display: "block" }}
@@ -34,7 +34,8 @@ export default function PropertiesSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              Availability:{property.units - property.occupied_units}
+              Availability:
+              {property.units.filter((p) => !p.tenants.length > 0).length}
             </Typography>
           </React.Fragment>
         }

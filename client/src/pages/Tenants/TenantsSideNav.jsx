@@ -26,7 +26,7 @@ export default function TenantSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              {tenant.property.address.street_address} | {tenant.unit}
+              {tenant.property.address.street_address} | {tenant.unit.name}
             </Typography>
           </React.Fragment>
         }
@@ -37,14 +37,14 @@ export default function TenantSideNav({ selectedId, data }) {
     { label: "name", terms: [(item) => item.user.first_name] },
     {
       label: "location",
-      terms: [(item) => item.property.name, (item) => item.unit],
+      terms: [(item) => item.property.name, (item) => item.unit.name],
     },
   ];
   const searchParms = (item) => item.name;
 
   const collapsedText = {
     primary: (item) => `${item.user.first_name} ${item.user.last_name}`,
-    secondary: (item) => `${item.unit}`,
+    secondary: (item) => `${item.unit.name}`,
   };
   return (
     <SideNav

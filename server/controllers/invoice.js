@@ -9,9 +9,7 @@ exports.getInvoices = asyncHandler(async (req, res) => {
     const InvoiceList = await Invoice.find()
       .populate({
         path: "tenant",
-        populate: {
-          path: "user",
-        },
+        populate: [{ path: "user" }, { path: "unit" }],
       })
       .populate({
         path: "property",
@@ -35,9 +33,7 @@ exports.getInvoiceForId = asyncHandler(async (req, res) => {
     const invoice = await Invoice.findById(id)
       .populate({
         path: "tenant",
-        populate: {
-          path: "user",
-        },
+        populate: [{ path: "user" }, { path: "unit" }],
       })
       .populate({
         path: "property",

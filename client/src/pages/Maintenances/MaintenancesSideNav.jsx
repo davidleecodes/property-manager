@@ -19,7 +19,7 @@ export default function MaintenanceSideNav({ selectedId, data }) {
             >
               {maintenance.location === "common"
                 ? "common"
-                : maintenance.tenant.unit}{" "}
+                : maintenance.tenant.unit.name}{" "}
               | {maintenance.issue}
             </Typography>
             <Typography
@@ -39,14 +39,16 @@ export default function MaintenanceSideNav({ selectedId, data }) {
     { label: "date", terms: [(item) => item.date] },
     {
       label: "location",
-      terms: [(item) => item.property.name, (item) => item.tenant.unit],
+      terms: [(item) => item.property.name, (item) => item.tenant.unit.name],
     },
   ];
   const searchParms = (item) => item.name;
   const collapsedText = {
     primary: (item) => item.issue,
     secondary: (maintenance) =>
-      maintenance.location === "common" ? "common" : maintenance.tenant.unit,
+      maintenance.location === "common"
+        ? "common"
+        : maintenance.tenant.unit.name,
   };
   return (
     <SideNav

@@ -13,6 +13,7 @@ export default function Maintance() {
   let history = useHistory();
   useEffect(() => {
     getMaintenances().then((res) => {
+      console.log(res);
       setMaintenanceData(res);
     });
   }, []);

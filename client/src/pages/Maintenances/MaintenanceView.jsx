@@ -32,7 +32,7 @@ export default function MaintenanceView({ maintenanceId }) {
         <span>
           {maintenance.location === "common"
             ? "common"
-            : maintenance.tenant && maintenance.tenant.unit}
+            : maintenance.tenant && maintenance.tenant.unit.name}
         </span>
       ),
     },

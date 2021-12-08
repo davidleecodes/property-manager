@@ -9,10 +9,9 @@ exports.getMaintenances = asyncHandler(async (req, res) => {
     const MaintenaceList = await Maintenance.find()
       .populate({
         path: "tenant",
-        populate: {
-          path: "user",
-        },
+        populate: [{ path: "user" }, { path: "unit" }],
       })
+
       .populate({
         path: "property",
       });
@@ -35,9 +34,7 @@ exports.getMaintenanceForId = asyncHandler(async (req, res) => {
     const maintenance = await Maintenance.findById(id)
       .populate({
         path: "tenant",
-        populate: {
-          path: "user",
-        },
+        populate: [{ path: "user" }, { path: "unit" }],
       })
       .populate({
         path: "property",

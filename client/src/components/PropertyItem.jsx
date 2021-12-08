@@ -49,8 +49,8 @@ export default function PropertyItem({ property }) {
           color="text.primary"
         >
           Units:
-          {property.units} | Availability:
-          {property.units - property.occupied_units}
+          {property.units.length} | Availability:
+          {property.units.filter((p) => !p.tenants.length > 0).length}
         </Typography>
       </Grid>
     </Grid>

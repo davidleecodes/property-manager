@@ -9,9 +9,7 @@ exports.getLeases = asyncHandler(async (req, res) => {
     const LeaseList = await Lease.find()
       .populate({
         path: "tenant",
-        populate: {
-          path: "user",
-        },
+        populate: [{ path: "user" }, { path: "unit" }],
       })
       .populate({
         path: "property",
@@ -35,9 +33,7 @@ exports.getLeaseForId = asyncHandler(async (req, res) => {
     const lease = await Lease.findById(id)
       .populate({
         path: "tenant",
-        populate: {
-          path: "user",
-        },
+        populate: [{ path: "user" }, { path: "unit" }],
       })
       .populate({
         path: "property",

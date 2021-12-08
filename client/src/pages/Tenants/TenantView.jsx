@@ -40,7 +40,7 @@ export default function TenantView({ tenantId }) {
       label: "Location",
       content: (maintenance) => (
         <span>
-          {maintenance.location === "common" ? "common" : tenantData.unit}
+          {maintenance.location === "common" ? "common" : tenantData.unit.name}
         </span>
       ),
     },

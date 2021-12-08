@@ -12,7 +12,9 @@ const tenantSchema = new mongoose.Schema({
     required: true,
   },
   unit: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "unit",
+    required: true,
   },
   tenant_since: {
     type: Date,

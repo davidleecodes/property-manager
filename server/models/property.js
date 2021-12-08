@@ -26,7 +26,24 @@ const propertySchema = new mongoose.Schema({
     type: String,
   },
   address: {
-    type: addressSchema,
+    city: {
+      type: String,
+    },
+    street_name: {
+      type: String,
+    },
+    street_address: {
+      type: String,
+    },
+    zip_code: {
+      type: String,
+    },
+    state: {
+      type: String,
+    },
+    country: {
+      type: String,
+    },
   },
   cost: {
     type: Number,
@@ -39,7 +56,12 @@ const propertySchema = new mongoose.Schema({
     type: Number,
   },
   units: {
-    type: [String],
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "unit",
+      },
+    ],
   },
 });
 

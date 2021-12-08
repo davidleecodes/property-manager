@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   last_name: {
     type: String,
   },
+
   img_url: {
     type: String,
   },
@@ -25,6 +26,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+});
+
+userSchema.virtual("full_Name").get(function () {
+  return this.name.first + " " + this.name.last;
 });
 
 module.exports = User = mongoose.model("user", userSchema, "user");

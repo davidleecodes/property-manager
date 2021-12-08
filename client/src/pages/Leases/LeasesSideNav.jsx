@@ -19,7 +19,8 @@ export default function LeaseSideNav({ selectedId, data }) {
               color="text.primary"
             >
               {`${lease.tenant.user.first_name} ${lease.tenant.user.last_name}`}{" "}
-              | {lease.location === "common" ? "common" : lease.tenant.unit}
+              |{" "}
+              {lease.location === "common" ? "common" : lease.tenant.unit.name}
             </Typography>
             <Typography
               sx={{ display: "block" }}
@@ -38,7 +39,7 @@ export default function LeaseSideNav({ selectedId, data }) {
   const sortParams = [
     {
       label: "location",
-      terms: [(item) => item.property.name, (item) => item.tenant.unit],
+      terms: [(item) => item.property.name, (item) => item.tenant.unit.name],
     },
   ];
   const searchParms = (item) => item.name;

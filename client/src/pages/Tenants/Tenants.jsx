@@ -14,6 +14,7 @@ export default function Tenants() {
   useEffect(() => {
     getTenants().then((res) => {
       setTenantData(res);
+      console.log(res);
     });
   }, []);
 

@@ -50,7 +50,7 @@ export default function TenantItem({ tenant }) {
           variant="body2"
           color="text.primary"
         >
-          Unit: {tenant.unit}
+          Unit: {tenant.unit.name}
         </Typography>
       </Grid>
     </Grid>

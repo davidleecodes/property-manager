@@ -46,7 +46,7 @@ export default function PropertyView({ propertyId }) {
     },
     {
       label: "Unit",
-      content: (tenant) => <span>{tenant.unit}</span>,
+      content: (tenant) => <span>{tenant.unit.name}</span>,
     },
     {
       label: "Phone",
@@ -75,7 +75,7 @@ export default function PropertyView({ propertyId }) {
   ];
   const tenantSortParams = [
     { label: "name", terms: [(item) => item.user.first_name] },
-    { label: "unit", terms: [(item) => item.unit] },
+    { label: "unit", terms: [(item) => item.unit.name] },
   ];
   const maintenanceColumns = [
     {
@@ -93,7 +93,7 @@ export default function PropertyView({ propertyId }) {
           {maintenance.location === "common"
             ? "common"
             : tenantMap[maintenance.tenant] &&
-              tenantMap[maintenance.tenant].unit}
+              tenantMap[maintenance.tenant].unit.name}
         </span>
       ),
     },
@@ -145,7 +145,7 @@ export default function PropertyView({ propertyId }) {
       label: "name",
       terms: [(item) => tenantMap[item.tenant].user.first_name],
     },
-    { label: "unit", terms: [(item) => tenantMap[item.tenant].unit] },
+    { label: "unit", terms: [(item) => tenantMap[item.tenant].unit.name] },
   ];
 
   const invoiceColumns = [

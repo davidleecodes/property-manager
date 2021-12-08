@@ -18,7 +18,10 @@ export default function InvoiceSideNav({ selectedId, data }) {
               color="text.primary"
             >
               {`${invoice.tenant.user.first_name} ${invoice.tenant.user.last_name}`}{" "}
-              | {invoice.location === "common" ? "common" : invoice.tenant.unit}
+              |{" "}
+              {invoice.location === "common"
+                ? "common"
+                : invoice.tenant.unit.name}
             </Typography>
             <Typography
               sx={{ display: "block" }}
@@ -37,7 +40,7 @@ export default function InvoiceSideNav({ selectedId, data }) {
   const sortParams = [
     {
       label: "location",
-      terms: [(item) => item.property.name, (item) => item.tenant.unit],
+      terms: [(item) => item.property.name, (item) => item.tenant.unit.name],
     },
   ];
   const searchParms = (item) => item.name;
