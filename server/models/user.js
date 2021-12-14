@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
 
-  img_url: {
+  image_url: {
     type: String,
   },
   phone_number: {

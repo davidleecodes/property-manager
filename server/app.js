@@ -12,6 +12,9 @@ const tenantRouter = require("./routes/tenant");
 const maintenanceRouter = require("./routes/maintenance");
 const invoiceRouter = require("./routes/invoice");
 const leaseRouter = require("./routes/lease");
+const userRouter = require("./routes/user");
+// var multer = require("multer");
+// var upload = multer();
 
 const { json, urlencoded } = express;
 const cors = require("cors");
@@ -26,6 +29,8 @@ if (process.env.NODE_ENV === "development") {
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
+// app.use(upload.array());
+// app.use(express.static("public"));
 app.use(express.static(join(__dirname, "public")));
 
 const corsConfig = {
@@ -39,6 +44,7 @@ app.use("/tenant", tenantRouter);
 app.use("/maintenance", maintenanceRouter);
 app.use("/invoice", invoiceRouter);
 app.use("/lease", leaseRouter);
+app.use("/user", userRouter);
 
 app.get("/", (req, res) => {
   res.send("API is running");

@@ -6,6 +6,7 @@ const Lease = require("../models/lease");
 const Unit = require("../models/unit");
 const asyncHandler = require("express-async-handler");
 const decodeToken = require("../utils/decodeToken");
+const { cloudinary } = require("../middleware/cloudinary");
 
 //@route GET /properties
 //get list of properties
@@ -62,24 +63,109 @@ exports.getPropertyForId = asyncHandler(async (req, res) => {
 //@route Post /property/new
 //post property
 exports.newProperty = asyncHandler(async (req, res) => {
-  const { name, address, image_url, units } = req.body;
+  const {
+    name,
+    street_name,
+    street_address,
+    state,
+    city,
+    zip_code,
+    country,
+    units,
+  } = JSON.parse(req.body.data);
 
   const property = await Property.create({
     name,
-    address,
-    image_url,
+    address: {
+      street_name,
+      street_address,
+      city,
+      state,
+      zip_code,
+      country,
+    },
   });
+  if (req.file) {
+    property.image_url = req.file.path;
+    await property.save();
+  }
 
   const property_units = await Promise.all(
     units.map(async (u) => {
       let unit = await Unit.create({ name: u, property: property._id });
-      console.log(unit);
       return unit._id;
     })
   );
-  console.log(property_units);
   property.units = property_units;
   await property.save();
+  if (property) {
+    res.status(201).json({
+      success: { property },
+    });
+  } else {
+    res.status(404);
+    throw new Error("Invalid request data");
+  }
+});
+
+//@route Patch /property/edit:id
+//post property
+exports.editProperty = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  console.log(req.file);
+
+  console.log(req.body.data);
+  const {
+    name,
+    street_name,
+    street_address,
+    state,
+    city,
+    zip_code,
+    country,
+    units,
+    image_url,
+  } = JSON.parse(req.body.data);
+
+  const data = {
+    name,
+    address: {
+      street_name,
+      street_address,
+      city,
+      state,
+      zip_code,
+      country,
+    },
+    // image_url,
+  };
+  const propertyOld = await Property.findById(id);
+  const property = await Property.findByIdAndUpdate(id, data, { new: true });
+  console.log("OLD", propertyOld, image_url);
+  console.log("PROP", property, image_url);
+  if (req.file) {
+    if (propertyOld.image_url) removePreviousImage(propertyOld);
+    property.image_url = req.file.path;
+    await property.save();
+  } else if (propertyOld.image_url && !image_url) {
+    removePreviousImage(propertyOld);
+    property.image_url = null;
+    await property.save();
+  }
+  async function removePreviousImage(doc) {
+    const filename = doc.image_url.split("/");
+    const imageKey = filename[filename.length - 1].split(".")[0];
+    console.log("IMAGEKEY", filename, imageKey);
+    await cloudinary.uploader.destroy(
+      `propertyManager/property/${imageKey}`,
+      { invalidate: true },
+      (err, res) => {
+        console.log(res, err);
+      }
+    );
+  }
+
   if (property) {
     res.status(201).json({
       success: { property },

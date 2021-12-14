@@ -64,3 +64,42 @@ exports.getTenantForId = asyncHandler(async (req, res) => {
     return res.status(500).json({ message: error });
   }
 });
+
+exports.newTenant = asyncHandler(async (req, res) => {
+  const {
+    first_name,
+    last_name,
+    image_url,
+    phone_number,
+    email,
+    account_type,
+    username,
+    password,
+    property,
+    unit,
+  } = req.body;
+
+  const user = await User.create({
+    first_name,
+    last_name,
+    image_url,
+    phone_number,
+    email,
+    account_type,
+    username,
+    password,
+  });
+
+  if (account_type === "tenant") {
+    const tenant = Tenant.create({ user: user._id, property, unit });
+  }
+
+  if (user) {
+    res.status(201).json({
+      success: { user },
+    });
+  } else {
+    res.status(404);
+    throw new Error("Invalid request data");
+  }
+});

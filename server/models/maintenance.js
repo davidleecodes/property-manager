@@ -13,6 +13,7 @@ const maintenaceSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
+    default: Date.now,
   },
   issue: {
     type: String,

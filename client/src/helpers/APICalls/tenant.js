@@ -23,3 +23,21 @@ export async function getTenantForId(id) {
       error: { message: "Unable to connect to server. Please try again" },
     }));
 }
+
+export async function newTenant(values) {
+  let formData = new FormData();
+  const { image_url, ...data } = values;
+  formData.append("file", image_url);
+  formData.append("data", JSON.stringify(data));
+
+  const fetchOptions = {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  };
+  return await fetch(`${serverPath}/user/new`, fetchOptions)
+    .then((res) => res.json())
+    .catch(() => ({
+      error: { message: "Unable to connect to server. Please try again" },
+    }));
+}

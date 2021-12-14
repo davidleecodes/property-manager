@@ -18,6 +18,7 @@ const tenantSchema = new mongoose.Schema({
   },
   tenant_since: {
     type: Date,
+    default: Date.now,
   },
 });
 

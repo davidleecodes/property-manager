@@ -4,14 +4,17 @@ import TextField from "@mui/material/TextField";
 import { useField, FieldArray } from "formik";
 import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
-import Paper from "@mui/material/Paper";
 import InputLabel from "@mui/material/InputLabel";
 export default function MultiText({ label, formikKey, ...props }) {
   const [field, meta, helpers] = useField(formikKey);
   const [textData, setTextData] = useState("");
 
+  console.log(field.value);
   function handleAddText() {
-    helpers.setValue([...field.value, ...textData.split(",")]);
+    helpers.setValue([
+      ...field.value,
+      ...textData.split(",").filter((w) => w && w.trim()),
+    ]);
     setTextData("");
   }
 
@@ -34,29 +37,46 @@ export default function MultiText({ label, formikKey, ...props }) {
 
   return (
     <Grid>
-      <InputLabel htmlFor={field.name}>{label}</InputLabel>
+      <InputLabel
+        htmlFor={field.name}
+        error={meta.touched && Boolean(meta.error)}
+      >
+        {label}
+      </InputLabel>
       <FieldArray
         id={field.name}
         name={field.name}
         render={(arrayHelpers) => (
-          // <Paper sx={{ p: 2 }}>
           <Grid>
-            {field.value.map((item, index) => (
-              <Chip
-                size="small"
-                key={index}
-                label={item}
-                variant="outlined"
-                onDelete={() => arrayHelpers.remove(index)}
-              />
-            ))}
-            {/* <Grid container justifyContent="flex-end"> */}
-            <Button component="label" onClick={handleSort}>
-              sort
-            </Button>
-            {/* </Grid> */}
+            {field.value.map((item, index) => {
+              if (item instanceof String) {
+                return (
+                  <Chip
+                    size="small"
+                    key={index}
+                    label={item}
+                    variant="outlined"
+                    onDelete={() => arrayHelpers.remove(index)}
+                  />
+                );
+              } else {
+                return (
+                  <Chip
+                    size="small"
+                    key={index}
+                    label={item.name || item}
+                    variant="outlined"
+                    onDelete={() => arrayHelpers.remove(index)}
+                  />
+                );
+              }
+            })}
+            {field.value.length > 1 && (
+              <Button component="label" onClick={handleSort}>
+                sort
+              </Button>
+            )}
           </Grid>
-          // </Paper>
         )}
       />
       <TextField

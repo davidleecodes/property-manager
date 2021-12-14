@@ -50,7 +50,7 @@ export default function PropertyItem({ property }) {
         >
           Units:
           {property.units.length} | Availability:
-          {property.units.filter((p) => !p.tenants.length > 0).length}
+          {/* {property.units.filter((p) => !p.tenants.length > 0).length} */}
         </Typography>
       </Grid>
     </Grid>

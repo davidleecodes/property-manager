@@ -49,3 +49,33 @@ exports.getMaintenanceForId = asyncHandler(async (req, res) => {
     return res.status(500).json({ message: error });
   }
 });
+
+//@route Post /maintenance/new
+//post maintenance
+exports.newMaintenance = asyncHandler(async (req, res) => {
+  const { tenant, property, issue, status, location } = JSON.parse(
+    req.body.data
+  );
+
+  const maintenance = await Maintenance.create({
+    tenant,
+    property,
+    issue,
+    status,
+    location,
+  });
+  if (req.files) {
+    let files = req.files.map((f) => f.path);
+    maintenance.media = files;
+    await maintenance.save();
+  }
+  console.log(maintenance);
+  if (maintenance) {
+    res.status(201).json({
+      success: { maintenance },
+    });
+  } else {
+    res.status(404);
+    throw new Error("Invalid request data");
+  }
+});
