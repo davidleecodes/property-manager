@@ -5,7 +5,7 @@ import MaintenanceHeader from "./MaintenanceHeader";
 import LoadingView from "../../components/LoadingView";
 import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
-
+import MaintenanceForm from "../../components/forms/MaintenanceForm";
 export default function MaintenanceView({ maintenanceId }) {
   const [maintenanceData, setMaintenanceData] = useState();
   useEffect(() => {
@@ -51,6 +51,7 @@ export default function MaintenanceView({ maintenanceId }) {
       {maintenanceData && (
         <Grid container spacing={3}>
           <MaintenanceHeader currentMaintenance={maintenanceData} />
+          <MaintenanceForm currentMaintenance={maintenanceData} />
           <Grid item xs={12}>
             <SingleTableView
               label={"Maintenance"}

@@ -41,3 +41,21 @@ export async function newTenant(values) {
       error: { message: "Unable to connect to server. Please try again" },
     }));
 }
+
+export async function editTenant(user_id, tenant_id, values) {
+  let formData = new FormData();
+  formData.append("file", values.image_url);
+  values.tenant_id = tenant_id;
+  formData.append("data", JSON.stringify(values));
+
+  const fetchOptions = {
+    method: "PATCH",
+    credentials: "include",
+    body: formData,
+  };
+  return await fetch(`${serverPath}/user/edit/${user_id}`, fetchOptions)
+    .then((res) => res.json())
+    .catch(() => ({
+      error: { message: "Unable to connect to server. Please try again" },
+    }));
+}

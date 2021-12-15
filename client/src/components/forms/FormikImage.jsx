@@ -12,7 +12,6 @@ export default function FormikImage({
   ...props
 }) {
   const [field, meta, helpers] = useField(formikKey);
-  // console.log(field.value, typeof field.value);
   function handleImageError(e) {
     e.target.src = defaultImage;
   }
@@ -47,7 +46,6 @@ export default function FormikImage({
       {avatar && (
         <Grid item>
           <Avatar
-            alt="Remy Sharp"
             src={
               field.value instanceof File
                 ? URL.createObjectURL(field.value)

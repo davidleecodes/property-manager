@@ -6,7 +6,7 @@ const Lease = require("../models/lease");
 const Unit = require("../models/unit");
 const asyncHandler = require("express-async-handler");
 const decodeToken = require("../utils/decodeToken");
-const { cloudinary } = require("../middleware/cloudinary");
+const { removeImage } = require("../utils/cloudinary");
 
 //@route GET /properties
 //get list of properties
@@ -29,7 +29,6 @@ exports.getProperties = asyncHandler(async (req, res) => {
 //get property for id
 exports.getPropertyForId = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  console.log("H");
   try {
     const property = await Property.findById(id);
     property.populate({
@@ -108,8 +107,8 @@ exports.newProperty = asyncHandler(async (req, res) => {
   }
 });
 
-//@route Patch /property/edit:id
-//post property
+//@route Patch /property/edit/:id
+//patch property
 exports.editProperty = asyncHandler(async (req, res) => {
   const id = req.params.id;
   console.log(id);
@@ -140,30 +139,16 @@ exports.editProperty = asyncHandler(async (req, res) => {
     },
     // image_url,
   };
-  const propertyOld = await Property.findById(id);
   const property = await Property.findByIdAndUpdate(id, data, { new: true });
-  console.log("OLD", propertyOld, image_url);
-  console.log("PROP", property, image_url);
   if (req.file) {
-    if (propertyOld.image_url) removePreviousImage(propertyOld);
+    if (property.image_url)
+      removeImage(property.image_url, "propertyManager/property");
     property.image_url = req.file.path;
     await property.save();
-  } else if (propertyOld.image_url && !image_url) {
-    removePreviousImage(propertyOld);
+  } else if (property.image_url && !image_url) {
+    removeImage(property.image_url, "propertyManager/property");
     property.image_url = null;
     await property.save();
-  }
-  async function removePreviousImage(doc) {
-    const filename = doc.image_url.split("/");
-    const imageKey = filename[filename.length - 1].split(".")[0];
-    console.log("IMAGEKEY", filename, imageKey);
-    await cloudinary.uploader.destroy(
-      `propertyManager/property/${imageKey}`,
-      { invalidate: true },
-      (err, res) => {
-        console.log(res, err);
-      }
-    );
   }
 
   if (property) {

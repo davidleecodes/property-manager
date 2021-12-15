@@ -2,11 +2,12 @@ const express = require("express");
 const router = express.Router();
 const protect = require("../middleware/auth");
 const multer = require("multer");
-const { storageUser } = require("../middleware/cloudinary");
+const { storageUser } = require("../utils/cloudinary");
 const upload = multer({ storage: storageUser });
 
-const { newUser } = require("../controllers/user");
+const { newUser, editUser } = require("../controllers/user");
 
 router.route("/new").post(upload.single("file"), newUser);
+router.route("/edit/:id").patch(upload.single("file"), editUser);
 
 module.exports = router;

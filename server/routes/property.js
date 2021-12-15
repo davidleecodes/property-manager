@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const protect = require("../middleware/auth");
 const multer = require("multer");
-const { storageProperty, storage } = require("../middleware/cloudinary");
+const { storageProperty, storage } = require("../utils/cloudinary");
 const upload = multer({ storage: storageProperty });
 const {
   getProperties,

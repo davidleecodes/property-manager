@@ -42,6 +42,7 @@ exports.getTenantForId = asyncHandler(async (req, res) => {
     const tenant = await Tenant.findById(id)
       .populate({
         path: "property",
+        populate: { path: "units" },
       })
       .populate({
         path: "user",

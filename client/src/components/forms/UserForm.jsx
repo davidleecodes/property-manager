@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { newTenant } from "../../helpers/APICalls/tenant";
+import { newTenant, editTenant } from "../../helpers/APICalls/tenant";
 import { CircularProgress } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { getProperties } from "../../helpers/APICalls/property";
@@ -32,7 +32,7 @@ export default function UserForm({ current }) {
   const initialValues = {
     first_name: "",
     last_name: "",
-    image_url: {},
+    image_url: "",
     phone_number: "",
     email: "",
     account_type: "",
@@ -52,8 +52,8 @@ export default function UserForm({ current }) {
     initialValues.account_type = current.user.account_type;
     initialValues.username = current.user.username;
     initialValues.password = current.user.password;
-    // initialValues.property = current.property;
-    // initialValues.unit = current.unit;
+    initialValues.property = current.property._id;
+    initialValues.unit = current.unit._id;
   }
 
   const validationSchema = Yup.object().shape({
@@ -72,6 +72,20 @@ export default function UserForm({ current }) {
   });
   function handleSubmit(values, { setSubmitting }) {
     if (current) {
+      editTenant(current.user._id, current._id, values).then((data) => {
+        setSubmitting(true);
+        if (data.error) {
+          console.error({ error: data.error.message });
+          setSubmitting(false);
+        } else if (data.success) {
+          setSubmitting(false);
+          history.go(0);
+        } else {
+          // should not get here from backend but this catch is for an unknown issue
+          console.error({ data });
+          setSubmitting(false);
+        }
+      });
     } else {
       newTenant(values).then((data) => {
         setSubmitting(true);
@@ -143,7 +157,7 @@ export default function UserForm({ current }) {
                       }
                       formikKey="unit"
                       itemArray={
-                        values.property
+                        values.property && propertyData.length > 0
                           ? propertyData.filter(
                               (p) => p._id === values.property
                             )[0].units

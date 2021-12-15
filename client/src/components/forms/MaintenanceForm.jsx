@@ -4,7 +4,10 @@ import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { newMaintenance } from "../../helpers/APICalls/maintenance";
+import {
+  newMaintenance,
+  editMaintenance,
+} from "../../helpers/APICalls/maintenance";
 import { CircularProgress } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import FormikTextField from "./FormikTextField";
@@ -13,7 +16,7 @@ import { getTenants } from "../../helpers/APICalls/tenant";
 import FormikMultiImage from "./FormikMultiImage";
 import Paper from "@mui/material/Paper";
 
-export default function PropertyForm() {
+export default function PropertyForm({ currentMaintenance }) {
   const history = useHistory();
 
   const initialValues = {
@@ -23,6 +26,15 @@ export default function PropertyForm() {
     media: [],
     location: "",
   };
+
+  console.log(currentMaintenance);
+  if (currentMaintenance) {
+    initialValues.tenant = currentMaintenance.tenant._id;
+    initialValues.issue = currentMaintenance.issue;
+    initialValues.status = currentMaintenance.status;
+    initialValues.location = currentMaintenance.location;
+    initialValues.media = currentMaintenance.media;
+  }
   const [tenantData, setTenantData] = useState([]);
   useEffect(() => {
     getTenants().then((res) => {
@@ -43,32 +55,50 @@ export default function PropertyForm() {
     media: Yup.array().of(Yup.mixed()).min(1, "at least one image is required"),
   });
   function handleSubmit(values, { setSubmitting }) {
-    values.property = tenantData.filter(
-      (t) => t._id === values.tenant
-    )[0].property;
-    newMaintenance(values).then((data) => {
-      setSubmitting(true);
-      console.log(data);
-      if (data.error) {
-        console.error({ error: data.error.message });
-        setSubmitting(false);
-      } else if (data.success) {
-        setSubmitting(false);
-        history.push({
-          pathname: `/maintenances/${data.success.maintenance._id}`,
-        });
-      } else {
-        // should not get here from backend but this catch is for an unknown issue
-        console.error({ data });
-        setSubmitting(false);
-      }
-    });
+    if (currentMaintenance) {
+      editMaintenance(currentMaintenance._id, values).then((data) => {
+        setSubmitting(true);
+        if (data.error) {
+          console.error({ error: data.error.message });
+          setSubmitting(false);
+        } else if (data.success) {
+          setSubmitting(false);
+          history.go(0);
+        } else {
+          // should not get here from backend but this catch is for an unknown issue
+          console.error({ data });
+          setSubmitting(false);
+        }
+      });
+    } else {
+      values.property = tenantData.filter(
+        (t) => t._id === values.tenant
+      )[0].property;
+      newMaintenance(values).then((data) => {
+        setSubmitting(true);
+        console.log(data);
+        if (data.error) {
+          console.error({ error: data.error.message });
+          setSubmitting(false);
+        } else if (data.success) {
+          setSubmitting(false);
+          history.push({
+            pathname: `/maintenances/${data.success.maintenance._id}`,
+          });
+        } else {
+          // should not get here from backend but this catch is for an unknown issue
+          console.error({ data });
+          setSubmitting(false);
+        }
+      });
+    }
   }
 
   return (
     <Grid item xs={12}>
       <Paper sx={{ p: 2 }}>
         <Formik
+          enableReinitialize
           validateOnChange
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -120,6 +150,7 @@ export default function PropertyForm() {
                     itemArray={[
                       { _id: "common", name: "common" },
                       values.tenant &&
+                        tenantData.length > 0 &&
                         tenantData.filter((t) => t._id === values.tenant)[0]
                           .unit,
                     ]}
@@ -154,6 +185,8 @@ export default function PropertyForm() {
                 >
                   {isSubmitting ? (
                     <CircularProgress style={{ color: "white" }} />
+                  ) : currentMaintenance ? (
+                    "Update"
                   ) : (
                     "Create"
                   )}

@@ -39,10 +39,23 @@ const storageMaintenance = new CloudinaryStorage({
   },
 });
 
+async function removeImage(image, folder) {
+  const filename = image.split("/");
+  const imageKey = filename[filename.length - 1].split(".")[0];
+  await cloudinary.uploader.destroy(
+    `${folder}/${imageKey}`,
+    { invalidate: true },
+    (err, res) => {
+      console.log(res, err);
+    }
+  );
+}
+
 module.exports = {
   cloudinary,
   storage,
   storageProperty,
   storageUser,
   storageMaintenance,
+  removeImage,
 };

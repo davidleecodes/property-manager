@@ -33,7 +33,9 @@ export default function FormikMultiImage({ label, formikKey, ...props }) {
                     <CardMedia
                       component="img"
                       height="200"
-                      image={URL.createObjectURL(item)}
+                      image={
+                        item instanceof File ? URL.createObjectURL(item) : item
+                      }
                       alt={label}
                     />
 
@@ -72,7 +74,9 @@ export default function FormikMultiImage({ label, formikKey, ...props }) {
                     }}
                     label="mew"
                     id={field.name}
-                    onChange={(e) => helpers.setValue([...e.target.files])}
+                    onChange={(e) =>
+                      helpers.setValue([...field.value, ...e.target.files])
+                    }
                   />
                 </Button>
               </CardActions>
@@ -89,6 +93,9 @@ export default function FormikMultiImage({ label, formikKey, ...props }) {
         value={field.value}
         disabled
         sx={{
+          ".MuiInput-root input": {
+            display: "none",
+          },
           ".MuiInput-root::before": {
             borderBottom: "none",
           },
