@@ -7,6 +7,7 @@ const Unit = require("../models/unit");
 const asyncHandler = require("express-async-handler");
 const decodeToken = require("../utils/decodeToken");
 const { removeImage } = require("../utils/cloudinary");
+const multer = require("multer");
 
 //@route GET /properties
 //get list of properties
@@ -111,10 +112,7 @@ exports.newProperty = asyncHandler(async (req, res) => {
 //patch property
 exports.editProperty = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  console.log(id);
-  console.log(req.file);
 
-  console.log(req.body.data);
   const {
     name,
     street_name,
@@ -123,7 +121,8 @@ exports.editProperty = asyncHandler(async (req, res) => {
     city,
     zip_code,
     country,
-    units,
+    newUnits,
+    inputUnits,
     image_url,
   } = JSON.parse(req.body.data);
 
@@ -139,7 +138,10 @@ exports.editProperty = asyncHandler(async (req, res) => {
     },
     // image_url,
   };
-  const property = await Property.findByIdAndUpdate(id, data, { new: true });
+  const property = await Property.findByIdAndUpdate(id, data, {
+    new: true,
+  });
+
   if (req.file) {
     if (property.image_url)
       removeImage(property.image_url, "propertyManager/property");
@@ -150,6 +152,22 @@ exports.editProperty = asyncHandler(async (req, res) => {
     property.image_url = null;
     await property.save();
   }
+
+  property.units.forEach((u) => {
+    if (inputUnits.every((inU) => inU._id !== u.toString())) {
+      Unit.findByIdAndDelete(u.toString());
+    }
+  });
+  property.units = inputUnits;
+  await property.save();
+  const newPropertyUnits = await Promise.all(
+    newUnits.map(async (u) => {
+      let unit = await Unit.create({ name: u, property: property._id });
+      return unit._id;
+    })
+  );
+  property.units = [...property.units, ...newPropertyUnits];
+  await property.save();
 
   if (property) {
     res.status(201).json({

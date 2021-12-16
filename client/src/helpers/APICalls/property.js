@@ -45,9 +45,19 @@ export async function newProperty(values) {
 export async function editProperty(id, values) {
   let formData = new FormData();
   console.log(values);
-  // const { image_url, ...data } = values;
-  formData.append("file", values.image_url);
-  formData.append("data", JSON.stringify(values));
+  const { image_url, units, ...data } = values;
+  formData.append("file", image_url);
+  data.newUnits = [];
+  data.inputUnits = [];
+  units.forEach((u) => {
+    if (typeof u === "string") {
+      data.newUnits.push(u);
+    } else {
+      data.inputUnits.push(u);
+    }
+  });
+  console.log(data);
+  formData.append("data", JSON.stringify(data));
 
   const fetchOptions = {
     method: "PATCH",
