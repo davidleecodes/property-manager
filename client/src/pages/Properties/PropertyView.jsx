@@ -10,7 +10,8 @@ import TenantAvatarCell from "../../components/TenantAvatarCell";
 import currencyformatter from "../../helpers/currencyFormatter";
 import LoadingView from "../../components/LoadingView";
 import dateFormatter from "./../../helpers/dateFormatter";
-import PropertyForm from "../../components/forms/PropertyForm";
+import UserForm from "../../components/forms/UserForm";
+import MaintenanceForm from "./../../components/forms/MaintenanceForm";
 
 export default function PropertyView({ propertyId }) {
   const [tenantMap, setTenantMap] = useState();
@@ -278,19 +279,21 @@ export default function PropertyView({ propertyId }) {
         <Grid container spacing={3}>
           <Header currentProperty={propertyData} invoiceData={invoiceData} />
 
-          <PropertyForm currentProperty={propertyData} />
-
           <TabTableView
             label={"Tenants"}
             tabs={tentantTabs}
             columns={tenantColumns}
             sortParams={tenantSortParams}
+            toggleLabel="add"
+            toggleContent={<UserForm />}
           ></TabTableView>
           <TabTableView
             label={"Maintenances"}
             tabs={maintenanceTabs}
             columns={maintenanceColumns}
             sortParams={maintenanceSortParams}
+            toggleLabel="add"
+            toggleContent={<MaintenanceForm />}
           ></TabTableView>
           <TabTableView
             label={"Invoices"}

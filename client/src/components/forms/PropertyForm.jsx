@@ -13,7 +13,7 @@ import FormikImage from "./FormikImage";
 import Paper from "@mui/material/Paper";
 import { DefaultPropertyImage } from "../../images/images";
 
-export default function PropertyForm({ currentProperty }) {
+export default function PropertyForm({ currentProperty, handleCancel }) {
   const history = useHistory();
   const initialValues = {
     name: "",
@@ -91,6 +91,7 @@ export default function PropertyForm({ currentProperty }) {
       });
     }
   }
+  function handleDelete() {}
 
   return (
     <Grid item>
@@ -163,23 +164,32 @@ export default function PropertyForm({ currentProperty }) {
                   <FormikMultiText label="Units" formikKey="units" />
                 </Grid>
               </Grid>
-              <Grid container justifyContent="flex-end">
-                {currentProperty && <Button> Cancel</Button>}
-
-                <Button
-                  type="submit"
-                  size="large"
-                  variant="contained"
-                  color="primary"
-                >
-                  {isSubmitting ? (
-                    <CircularProgress style={{ color: "white" }} />
-                  ) : currentProperty ? (
-                    "Update"
-                  ) : (
-                    "Create"
-                  )}
-                </Button>
+              <Grid item container spacing={1} justifyContent="flex-end">
+                <Grid item>
+                  <Button type="submit" variant="contained" color="primary">
+                    {isSubmitting ? (
+                      <CircularProgress style={{ color: "white" }} />
+                    ) : currentProperty ? (
+                      "Update"
+                    ) : (
+                      "Create"
+                    )}
+                  </Button>
+                </Grid>
+                {currentProperty && (
+                  <>
+                    <Grid item>
+                      <Button onClick={handleDelete} variant="outlined">
+                        Delete
+                      </Button>
+                    </Grid>
+                    <Grid item>
+                      <Button onClick={handleCancel} variant="outlined">
+                        Cancel
+                      </Button>
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </form>
           )}

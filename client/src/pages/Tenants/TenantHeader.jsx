@@ -31,7 +31,7 @@ export default function Header({ currentTenant }) {
         </Grid>
       )}
       {editMode && (
-        <UserForm current={currentTenant} handelCancel={toggleEdit} />
+        <UserForm current={currentTenant} handleCancel={toggleEdit} />
       )}
     </React.Fragment>
   );

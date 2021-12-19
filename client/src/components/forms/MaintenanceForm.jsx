@@ -16,7 +16,7 @@ import { getTenants } from "../../helpers/APICalls/tenant";
 import FormikMultiImage from "./FormikMultiImage";
 import Paper from "@mui/material/Paper";
 
-export default function PropertyForm({ currentMaintenance }) {
+export default function MaintenanceForm({ currentMaintenance, handleCancel }) {
   const history = useHistory();
 
   const initialValues = {
@@ -96,6 +96,7 @@ export default function PropertyForm({ currentMaintenance }) {
       });
     }
   }
+  function handleDelete() {}
 
   return (
     <Grid item xs={12}>
@@ -178,22 +179,35 @@ export default function PropertyForm({ currentMaintenance }) {
                 <Grid item xs={12}>
                   <FormikMultiImage label="Images" formikKey="media" />
                 </Grid>
-              </Grid>
-              <Grid container justifyContent="flex-end">
-                <Button
-                  type="submit"
-                  size="large"
-                  variant="contained"
-                  color="primary"
-                >
-                  {isSubmitting ? (
-                    <CircularProgress style={{ color: "white" }} />
-                  ) : currentMaintenance ? (
-                    "Update"
-                  ) : (
-                    "Create"
+
+                <Grid container item spacing={1} justifyContent="flex-end">
+                  <Grid item>
+                    <Button type="submit" variant="contained" color="primary">
+                      {isSubmitting ? (
+                        <CircularProgress style={{ color: "white" }} />
+                      ) : currentMaintenance ? (
+                        "Update"
+                      ) : (
+                        "Create"
+                      )}
+                    </Button>
+                  </Grid>
+
+                  {currentMaintenance && (
+                    <Grid item>
+                      <Button onClick={handleDelete} variant="outlined">
+                        Delete
+                      </Button>
+                    </Grid>
                   )}
-                </Button>
+                  {handleCancel && (
+                    <Grid item>
+                      <Button onClick={handleCancel} variant="outlined">
+                        Cancel
+                      </Button>
+                    </Grid>
+                  )}
+                </Grid>
               </Grid>
             </form>
           )}

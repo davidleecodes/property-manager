@@ -20,9 +20,7 @@ const userSchema = new mongoose.Schema({
   account_type: {
     type: String,
   },
-  username: {
-    type: String,
-  },
+
   password: {
     type: String,
   },

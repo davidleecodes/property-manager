@@ -16,7 +16,6 @@ exports.newUser = asyncHandler(async (req, res) => {
     phone_number,
     email,
     account_type,
-    username,
     password,
     property,
     unit,
@@ -28,7 +27,6 @@ exports.newUser = asyncHandler(async (req, res) => {
     phone_number,
     email,
     account_type,
-    username,
     password,
   });
 
@@ -65,7 +63,6 @@ exports.editUser = asyncHandler(async (req, res) => {
     phone_number,
     email,
     account_type,
-    username,
     password,
     property,
     unit,
@@ -79,7 +76,6 @@ exports.editUser = asyncHandler(async (req, res) => {
     phone_number,
     email,
     account_type,
-    username,
     password,
   };
 

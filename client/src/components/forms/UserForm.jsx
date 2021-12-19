@@ -14,7 +14,7 @@ import FormikImage from "./FormikImage";
 import Paper from "@mui/material/Paper";
 import { DefaultUserImage } from "../../images/images";
 
-export default function UserForm({ current, handelCancel }) {
+export default function UserForm({ current, handleCancel }) {
   const history = useHistory();
   const [propertyData, setPropertyData] = useState([]);
   useEffect(() => {
@@ -64,7 +64,6 @@ export default function UserForm({ current, handelCancel }) {
     phone_number: Yup.string().required("phone_number is required"),
     email: Yup.string().email().required("email is required"),
     account_type: Yup.string().required("account_type is required"),
-    username: Yup.string().required("username is required"),
     password: Yup.string().required("password is required"),
     property: Yup.string().required("property is required"),
     unit: Yup.string().required("unit is required"),
@@ -105,6 +104,7 @@ export default function UserForm({ current, handelCancel }) {
     }
   }
 
+  function handleDelete() {}
   return (
     <Grid item>
       <Paper sx={{ p: 2 }}>
@@ -196,33 +196,39 @@ export default function UserForm({ current, handelCancel }) {
                       itemLabel={(item) => item.label}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormikTextField label="Username" formikKey="username" />
-                  </Grid>
 
                   <Grid item xs={12} sm={6}>
                     <FormikTextField label="Password" formikKey="password" />
                   </Grid>
-                </Grid>
-                <Grid container spacing={1} justifyContent="flex-end">
-                  {current && (
+
+                  <Grid item container spacing={1} justifyContent="flex-end">
                     <Grid item>
-                      <Button onClick={handelCancel} variant="outlined">
-                        Cancel
+                      <Button type="submit" variant="contained" color="primary">
+                        {isSubmitting ? (
+                          <CircularProgress style={{ color: "white" }} />
+                        ) : current ? (
+                          "Update"
+                        ) : (
+                          "Create"
+                        )}
                       </Button>
                     </Grid>
-                  )}
-
-                  <Grid item>
-                    <Button type="submit" variant="contained" color="primary">
-                      {isSubmitting ? (
-                        <CircularProgress style={{ color: "white" }} />
-                      ) : current ? (
-                        "Update"
-                      ) : (
-                        "Create"
-                      )}
-                    </Button>
+                    {current && (
+                      <>
+                        <Grid item>
+                          <Button onClick={handleDelete} variant="outlined">
+                            Delete
+                          </Button>
+                        </Grid>
+                      </>
+                    )}
+                    {handleCancel && (
+                      <Grid item>
+                        <Button onClick={handleCancel} variant="outlined">
+                          Cancel
+                        </Button>
+                      </Grid>
+                    )}
                   </Grid>
                 </Grid>
               </form>

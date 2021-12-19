@@ -8,6 +8,7 @@ import currencyformatter from "../../helpers/currencyFormatter";
 import LoadingView from "../../components/LoadingView";
 import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
+import MaintenanceForm from "../../components/forms/MaintenanceForm";
 
 export default function TenantView({ tenantId }) {
   const [maintenanceData, setMaintenanceData] = useState([]);
@@ -136,13 +137,18 @@ export default function TenantView({ tenantId }) {
               label={"Maintenance"}
               data={maintenanceData}
               columns={maintenanceColumns}
+              toggleLabel="add"
+              toggleContent={<MaintenanceForm />}
             />
+          </Grid>
+          <Grid item xs={12}>
             <SingleTableView
               label={"Invoices"}
               data={invoiceData}
               columns={invoiceColumns}
             />
-
+          </Grid>
+          <Grid item xs={12}>
             <SingleTableView
               label={"Leases"}
               data={leaseData}

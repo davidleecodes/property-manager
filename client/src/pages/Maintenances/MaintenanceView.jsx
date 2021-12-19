@@ -53,12 +53,16 @@ export default function MaintenanceView({ maintenanceId }) {
       {maintenanceData && (
         <Grid container spacing={3}>
           <MaintenanceHeader currentMaintenance={maintenanceData} />
-          <MaintenanceForm currentMaintenance={maintenanceData} />
+          {/* <MaintenanceForm currentMaintenance={maintenanceData} /> */}
           <Grid item xs={12}>
             <SingleTableView
               label={"Maintenance"}
               data={[maintenanceData]}
               columns={maintenanceColumns}
+              toggleLabel="edit"
+              toggleContent={
+                <MaintenanceForm currentMaintenance={maintenanceData} />
+              }
             >
               <Grid container spacing={0.5} sx={{ mt: 2 }}>
                 {maintenanceData.media &&
