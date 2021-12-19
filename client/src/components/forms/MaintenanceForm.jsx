@@ -21,7 +21,8 @@ export default function PropertyForm({ currentMaintenance }) {
 
   const initialValues = {
     tenant: "",
-    issue: "",
+    title: "",
+    body: "",
     status: "",
     media: [],
     location: "",
@@ -30,7 +31,8 @@ export default function PropertyForm({ currentMaintenance }) {
   console.log(currentMaintenance);
   if (currentMaintenance) {
     initialValues.tenant = currentMaintenance.tenant._id;
-    initialValues.issue = currentMaintenance.issue;
+    initialValues.title = currentMaintenance.title;
+    initialValues.body = currentMaintenance.body;
     initialValues.status = currentMaintenance.status;
     initialValues.location = currentMaintenance.location;
     initialValues.media = currentMaintenance.media;
@@ -49,7 +51,8 @@ export default function PropertyForm({ currentMaintenance }) {
 
   const validationSchema = Yup.object().shape({
     tenant: Yup.string().required("tenant is required"),
-    issue: Yup.string().required("issue is required"),
+    title: Yup.string().required("title is required"),
+    body: Yup.string().required("body is required"),
     status: Yup.string().required("state is required"),
     location: Yup.string().required("location is required"),
     media: Yup.array().of(Yup.mixed()).min(1, "at least one image is required"),
@@ -113,7 +116,7 @@ export default function PropertyForm({ currentMaintenance }) {
             isSubmitting,
           }) => (
             <form onSubmit={handleSubmit} noValidate>
-              <Typography variant="h6" gutterBottom>
+              <Typography component="h2" variant="h6" color="primary">
                 Maintenance
               </Typography>
 
@@ -160,14 +163,14 @@ export default function PropertyForm({ currentMaintenance }) {
                 </Grid>
                 <Grid item xs={12}>
                   <FormikTextField
-                    label="Issue (short description)"
-                    formikKey="issue"
+                    label="Title (short description)"
+                    formikKey="title"
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <FormikTextField
-                    label="Detail( detailed description)"
-                    formikKey="detail"
+                    label="Body( detailed description)"
+                    formikKey="body"
                     multiline
                     rows={4}
                   />

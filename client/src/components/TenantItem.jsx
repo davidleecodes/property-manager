@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid";
 import { Avatar } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
+import { DefaultUserImage } from "../images/images";
 
 export default function TenantItem({ tenant }) {
   const fullName = (user) => {
@@ -21,7 +22,7 @@ export default function TenantItem({ tenant }) {
           <Avatar
             sx={{ marginRight: "1em", width: 60, height: 60 }}
             alt={fullName(tenant.user)}
-            src={tenant.user.image_url}
+            src={tenant.user.image_url || DefaultUserImage}
           />
         </Link>
       </Grid>

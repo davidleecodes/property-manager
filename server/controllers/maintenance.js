@@ -39,6 +39,7 @@ exports.getMaintenanceForId = asyncHandler(async (req, res) => {
       })
       .populate({
         path: "property",
+        populate: { path: "units" },
       });
 
     if (maintenance) {
@@ -54,14 +55,15 @@ exports.getMaintenanceForId = asyncHandler(async (req, res) => {
 //@route Post /maintenance/new
 //post maintenance
 exports.newMaintenance = asyncHandler(async (req, res) => {
-  const { tenant, property, issue, status, location } = JSON.parse(
+  const { tenant, property, title, body, status, location } = JSON.parse(
     req.body.data
   );
 
   const maintenance = await Maintenance.create({
     tenant,
     property,
-    issue,
+    title,
+    body,
     status,
     location,
   });

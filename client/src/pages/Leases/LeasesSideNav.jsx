@@ -46,7 +46,7 @@ export default function LeaseSideNav({ selectedId, data }) {
   const collapsedText = {
     primary: (item) =>
       `${item.tenant.user.first_name} ${item.tenant.user.last_name}`,
-    secondary: (item) => `${item.end_date}`,
+    secondary: (item) => `${dateFormatter(item.end_date)}`,
   };
   return (
     <SideNav

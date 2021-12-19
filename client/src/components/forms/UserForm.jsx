@@ -12,10 +12,9 @@ import FormikTextField from "./FormikTextField";
 import FormikSelectField from "./FormikSelectField";
 import FormikImage from "./FormikImage";
 import Paper from "@mui/material/Paper";
+import { DefaultUserImage } from "../../images/images";
 
-export default function UserForm({ current }) {
-  const defaultUserImage =
-    "https://www.tenforums.com/geek/gars/images/2/types/thumb_15951118880user.png";
+export default function UserForm({ current, handelCancel }) {
   const history = useHistory();
   const [propertyData, setPropertyData] = useState([]);
   useEffect(() => {
@@ -125,7 +124,7 @@ export default function UserForm({ current }) {
           }) => {
             return (
               <form onSubmit={handleSubmit} noValidate>
-                <Typography variant="h6" gutterBottom>
+                <Typography component="h2" variant="h6" color="primary">
                   Tenant
                 </Typography>
                 <Grid container spacing={3}>
@@ -133,7 +132,7 @@ export default function UserForm({ current }) {
                     <FormikImage
                       label="image"
                       formikKey="image_url"
-                      defaultImage={defaultUserImage}
+                      defaultImage={DefaultUserImage}
                       avatar
                     />
                   </Grid>
@@ -205,21 +204,26 @@ export default function UserForm({ current }) {
                     <FormikTextField label="Password" formikKey="password" />
                   </Grid>
                 </Grid>
-                <Grid container justifyContent="flex-end">
-                  <Button
-                    type="submit"
-                    size="large"
-                    variant="contained"
-                    color="primary"
-                  >
-                    {isSubmitting ? (
-                      <CircularProgress style={{ color: "white" }} />
-                    ) : current ? (
-                      "Update"
-                    ) : (
-                      "Create"
-                    )}
-                  </Button>
+                <Grid container spacing={1} justifyContent="flex-end">
+                  {current && (
+                    <Grid item>
+                      <Button onClick={handelCancel} variant="outlined">
+                        Cancel
+                      </Button>
+                    </Grid>
+                  )}
+
+                  <Grid item>
+                    <Button type="submit" variant="contained" color="primary">
+                      {isSubmitting ? (
+                        <CircularProgress style={{ color: "white" }} />
+                      ) : current ? (
+                        "Update"
+                      ) : (
+                        "Create"
+                      )}
+                    </Button>
+                  </Grid>
                 </Grid>
               </form>
             );

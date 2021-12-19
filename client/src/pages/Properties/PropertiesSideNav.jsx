@@ -3,6 +3,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import SideNav from "../../components/SideNav";
+import { DefaultPropertyImage } from "../../images/images";
 
 export default function PropertiesSideNav({ selectedId, data }) {
   const itemContent = (property) => (
@@ -10,7 +11,7 @@ export default function PropertiesSideNav({ selectedId, data }) {
       <ListItemIcon sx={{ paddingRight: "2ch" }}>
         <img
           alt={property.name}
-          src={property.image_url}
+          src={property.image_url || DefaultPropertyImage}
           style={{ width: "100px", height: "60px", objectFit: "cover" }}
           loading="lazy"
         />
@@ -52,7 +53,7 @@ export default function PropertiesSideNav({ selectedId, data }) {
   const searchParms = (item) => item.name;
   const collapsedText = {
     primary: (item) => item.name,
-    secondary: (item) => `${item.units} units`,
+    secondary: (item) => `${item.units.length} units`,
   };
 
   return (

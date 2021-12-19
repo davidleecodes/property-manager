@@ -6,6 +6,8 @@ import LoadingView from "../../components/LoadingView";
 import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
 import MaintenanceForm from "../../components/forms/MaintenanceForm";
+import Typography from "@mui/material/Typography";
+
 export default function MaintenanceView({ maintenanceId }) {
   const [maintenanceData, setMaintenanceData] = useState();
   useEffect(() => {
@@ -24,7 +26,7 @@ export default function MaintenanceView({ maintenanceId }) {
 
     {
       label: "Issue",
-      content: (maintenance) => <span>{maintenance.issue}</span>,
+      content: (maintenance) => <span>{maintenance.title}</span>,
     },
     {
       label: "Location",
@@ -64,7 +66,7 @@ export default function MaintenanceView({ maintenanceId }) {
                     <Grid item sx={{ mr: 1 }} key={idx}>
                       <img
                         src={media}
-                        alt={maintenanceData.issue}
+                        alt={maintenanceData.title}
                         loading="lazy"
                         style={{
                           width: "200px",
@@ -75,6 +77,7 @@ export default function MaintenanceView({ maintenanceId }) {
                     </Grid>
                   ))}
               </Grid>
+              <Typography variant="body2">{maintenanceData.body}</Typography>
             </SingleTableView>
           </Grid>
         </Grid>

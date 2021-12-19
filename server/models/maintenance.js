@@ -15,7 +15,10 @@ const maintenaceSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  issue: {
+  title: {
+    type: String,
+  },
+  body: {
     type: String,
   },
   status: {

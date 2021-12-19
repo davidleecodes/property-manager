@@ -11,11 +11,10 @@ import FormikTextField from "./FormikTextField";
 import FormikMultiText from "./FormikMultiText";
 import FormikImage from "./FormikImage";
 import Paper from "@mui/material/Paper";
+import { DefaultPropertyImage } from "../../images/images";
 
 export default function PropertyForm({ currentProperty }) {
   const history = useHistory();
-  const defaultPropertyImage =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcgWFaoPPHUiSVNu9GCJRhgPcsVZg9RdpOe8FLH5AOh6Ha7E-BYhUEcjTtN-rShJgo2Rw&usqp=CAU";
   const initialValues = {
     name: "",
     units: [],
@@ -112,7 +111,7 @@ export default function PropertyForm({ currentProperty }) {
             isSubmitting,
           }) => (
             <form onSubmit={handleSubmit} noValidate>
-              <Typography variant="h6" gutterBottom>
+              <Typography component="h2" variant="h6" color="primary">
                 Property
               </Typography>
               <Grid container spacing={3}>
@@ -120,7 +119,7 @@ export default function PropertyForm({ currentProperty }) {
                   <FormikImage
                     label="image"
                     formikKey="image_url"
-                    defaultImage={defaultPropertyImage}
+                    defaultImage={DefaultPropertyImage}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -165,6 +164,8 @@ export default function PropertyForm({ currentProperty }) {
                 </Grid>
               </Grid>
               <Grid container justifyContent="flex-end">
+                {currentProperty && <Button> Cancel</Button>}
+
                 <Button
                   type="submit"
                   size="large"

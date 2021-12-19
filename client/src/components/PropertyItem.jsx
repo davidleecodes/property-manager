@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
+import { DefaultPropertyImage } from "../images/images";
 
 export default function PropertyItem({ property }) {
   const fullAddress = (address) => {
@@ -24,7 +25,7 @@ export default function PropertyItem({ property }) {
         >
           <img
             alt={property.name}
-            src={property.image_url}
+            src={property.image_url || DefaultPropertyImage}
             loading="lazy"
             style={{ width: "100px", height: "60px", objectFit: "cover" }}
           />
@@ -50,7 +51,7 @@ export default function PropertyItem({ property }) {
         >
           Units:
           {property.units.length} | Availability:
-          {/* {property.units.filter((p) => !p.tenants.length > 0).length} */}
+          {property.units.filter((p) => !p.tenants.length > 0).length}
         </Typography>
       </Grid>
     </Grid>

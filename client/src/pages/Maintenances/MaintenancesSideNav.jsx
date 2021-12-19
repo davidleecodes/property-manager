@@ -20,7 +20,7 @@ export default function MaintenanceSideNav({ selectedId, data }) {
               {maintenance.location === "common"
                 ? "common"
                 : maintenance.tenant.unit.name}{" "}
-              | {maintenance.issue}
+              | {maintenance.title}
             </Typography>
             <Typography
               sx={{ display: "block" }}
@@ -44,7 +44,7 @@ export default function MaintenanceSideNav({ selectedId, data }) {
   ];
   const searchParms = (item) => item.name;
   const collapsedText = {
-    primary: (item) => item.issue,
+    primary: (item) => item.title,
     secondary: (maintenance) =>
       maintenance.location === "common"
         ? "common"

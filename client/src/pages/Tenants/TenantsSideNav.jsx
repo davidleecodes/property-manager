@@ -4,6 +4,7 @@ import { Avatar } from "@mui/material";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
+import { DefaultUserImage } from "../../images/images";
 
 export default function TenantSideNav({ selectedId, data }) {
   const itemContent = (tenant) => (
@@ -12,7 +13,7 @@ export default function TenantSideNav({ selectedId, data }) {
         <Avatar
           sx={{ marginRight: "1em" }}
           alt={`${tenant.user.first_name}  ${tenant.user.last_name}`}
-          src={tenant.user.image_url}
+          src={tenant.user.image_url || DefaultUserImage}
         />
       </ListItemAvatar>
 

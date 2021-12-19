@@ -70,7 +70,9 @@ export default function FormikImage({
             onChange={(e) => helpers.setValue(e.target.files[0])}
           />
         </Button>
-        <Button onClick={() => helpers.setValue("")}> remove</Button>
+        {field.value && (
+          <Button onClick={() => helpers.setValue("")}> remove</Button>
+        )}
       </Grid>
     </Grid>
   );

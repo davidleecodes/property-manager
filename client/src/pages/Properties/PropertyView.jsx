@@ -85,7 +85,7 @@ export default function PropertyView({ propertyId }) {
     },
     {
       label: "Issue",
-      content: (maintenance) => <span>{maintenance.issue}</span>,
+      content: (maintenance) => <span>{maintenance.title}</span>,
     },
     {
       label: "Location",

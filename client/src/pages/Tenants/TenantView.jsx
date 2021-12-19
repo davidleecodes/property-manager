@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import TenantHeader from "./TenantHeader";
 import { getTenantForId } from "../../helpers/APICalls/tenant";
 import { Link as RouterLink } from "react-router-dom";
@@ -8,7 +8,6 @@ import currencyformatter from "../../helpers/currencyFormatter";
 import LoadingView from "../../components/LoadingView";
 import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
-import UserForm from "../../components/forms/UserForm";
 
 export default function TenantView({ tenantId }) {
   const [maintenanceData, setMaintenanceData] = useState([]);
@@ -35,7 +34,7 @@ export default function TenantView({ tenantId }) {
 
     {
       label: "Issue",
-      content: (maintenance) => <span>{maintenance.issue}</span>,
+      content: (maintenance) => <span>{maintenance.title}</span>,
     },
     {
       label: "Location",
@@ -131,7 +130,7 @@ export default function TenantView({ tenantId }) {
       {tenantData && (
         <Grid container spacing={3}>
           <TenantHeader currentTenant={tenantData} />
-          <UserForm current={tenantData} />
+
           <Grid item xs={12}>
             <SingleTableView
               label={"Maintenance"}

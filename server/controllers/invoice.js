@@ -37,6 +37,7 @@ exports.getInvoiceForId = asyncHandler(async (req, res) => {
       })
       .populate({
         path: "property",
+        populate: { path: "units" },
       });
 
     if (invoice) {

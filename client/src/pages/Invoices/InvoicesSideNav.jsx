@@ -47,7 +47,7 @@ export default function InvoiceSideNav({ selectedId, data }) {
   const collapsedText = {
     primary: (item) =>
       `${item.tenant.user.first_name} ${item.tenant.user.last_name}`,
-    secondary: (item) => `${item.due_date}`,
+    secondary: (item) => `${dateFormatter(item.due_date)}`,
   };
   return (
     <SideNav
