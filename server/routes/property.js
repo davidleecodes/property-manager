@@ -10,7 +10,6 @@ const {
   newProperty,
   editProperty,
 } = require("../controllers/property");
-const file = require("../middleware/file");
 
 router.route("/").get(getProperties);
 router.route("/:id").get(getPropertyForId);
