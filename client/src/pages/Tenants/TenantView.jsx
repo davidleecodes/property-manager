@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import TenantHeader from "./TenantHeader";
 import { getTenantForId } from "../../helpers/APICalls/tenant";
 import { Link as RouterLink } from "react-router-dom";

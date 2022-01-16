@@ -5,7 +5,8 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-
+import { useAuth } from "../context/useAuthContext";
+import acct from "../helpers/accoutTypes";
 const linkStyle = {
   my: 1,
   mx: 1.5,
@@ -14,14 +15,28 @@ const linkStyle = {
   },
 };
 export default function Nav() {
-  const linkPaths = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Properties", path: "/properties" },
-    { label: "Tenants", path: "/tenants" },
-    { label: "Maintenances", path: "/maintenances" },
-    { label: "Invoices", path: "/invoices" },
-    { label: "Leases", path: "/leases" },
-  ];
+  const { loggedInUser, logout } = useAuth();
+
+  let linkPaths;
+
+  if (loggedInUser && loggedInUser.account_type === acct.owner) {
+    linkPaths = [
+      { label: "Dashboard", path: "/dashboard" },
+      { label: "Properties", path: "/properties" },
+      { label: "Tenants", path: "/tenants" },
+      { label: "Maintenances", path: "/maintenances" },
+      { label: "Invoices", path: "/invoices" },
+      { label: "Leases", path: "/leases" },
+    ];
+  } else {
+    linkPaths = [
+      { label: "Dashboard", path: "/dashboard" },
+      { label: "Tenants", path: "/tenants" },
+      { label: "Maintenances", path: "/maintenances" },
+      { label: "Invoices", path: "/invoices" },
+      { label: "Leases", path: "/leases" },
+    ];
+  }
   return (
     <AppBar
       position="static"
@@ -49,14 +64,30 @@ export default function Nav() {
             </Link>
           ))}
         </nav>
-        <Button
-          component={RouterLink}
-          to={"/login"}
-          variant="outlined"
-          sx={{ my: 1, mx: 1.5 }}
-        >
-          Login
-        </Button>
+        {loggedInUser && (
+          <>
+            <Link component={RouterLink} to="/profile" underline="none">
+              {`${loggedInUser.first_name} ${loggedInUser.last_name}`}
+            </Link>
+            <Button
+              onClick={() => logout()}
+              variant="outlined"
+              sx={{ my: 1, mx: 1.5 }}
+            >
+              Logout
+            </Button>
+          </>
+        )}
+        {!loggedInUser && (
+          <Button
+            component={RouterLink}
+            to={"/login"}
+            variant="outlined"
+            sx={{ my: 1, mx: 1.5 }}
+          >
+            Login
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );

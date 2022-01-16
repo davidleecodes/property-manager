@@ -20,6 +20,11 @@ const leaseSchema = new mongoose.Schema({
   end_date: {
     type: Date,
   },
+  group: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "group",
+    // required: true,
+  },
 });
 
 module.exports = Lease = mongoose.model("lease", leaseSchema, "lease");

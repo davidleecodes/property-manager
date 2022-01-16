@@ -9,7 +9,6 @@ export default function MultiText({ label, formikKey, ...props }) {
   const [field, meta, helpers] = useField(formikKey);
   const [textData, setTextData] = useState("");
 
-  console.log(field.value);
   function handleAddText() {
     helpers.setValue([
       ...field.value,
@@ -87,7 +86,6 @@ export default function MultiText({ label, formikKey, ...props }) {
         multiline
         rows={4}
         variant="standard"
-        autoFocus
         helperText={
           meta.touched && meta.error
             ? meta.error

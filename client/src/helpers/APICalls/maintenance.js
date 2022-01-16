@@ -74,3 +74,15 @@ export async function editMaintenance(id, values) {
       error: { message: "Unable to connect to server. Please try again" },
     }));
 }
+
+export async function deleteMaintenance(id) {
+  const fetchOptions = {
+    method: "Delete",
+    credentials: "include",
+  };
+  return await fetch(`${serverPath}/maintenance/delete/${id}`, fetchOptions)
+    .then((res) => res.json())
+    .catch(() => ({
+      error: { message: "Unable to connect to server. Please try again" },
+    }));
+}

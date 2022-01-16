@@ -9,11 +9,13 @@ const {
   getPropertyForId,
   newProperty,
   editProperty,
+  deleteProperty,
 } = require("../controllers/property");
 
-router.route("/").get(getProperties);
-router.route("/:id").get(getPropertyForId);
-router.route("/new").post(upload.single("file"), newProperty);
-router.route("/edit/:id").patch(upload.single("file"), editProperty);
+router.route("/").get(protect, getProperties);
+router.route("/:id").get(protect, getPropertyForId);
+router.route("/new").post(upload.single("file"), protect, newProperty);
+router.route("/edit/:id").patch(upload.single("file"), protect, editProperty);
+router.route("/delete/:id").delete(protect, deleteProperty);
 
 module.exports = router;

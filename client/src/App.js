@@ -7,39 +7,79 @@ import Dashboard from "./pages/Dashboard";
 import Tenants from "./pages/Tenants/Tenants";
 import Maintenances from "./pages/Maintenances/Maintenances";
 import Invoices from "./pages/Invoices/Invoices";
-import Login from "./pages/Login/Login";
+import LogIn from "./pages/LogIn/LogIn";
 import Leases from "./pages/Leases/Leases";
+import { SnackBarProvider } from "./context/useSnackbarContext";
+import { AuthProvider } from "./context/useAuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import RedirectLoggedInRoute from "./components/RedirectLoggedInRoute";
+import Unauthorized from "./pages/Unauthorized";
+import SignUp from "./pages/SignUp/SignUp";
+import Profile from "./pages/Profile/Profile";
+import acct from "./helpers/accoutTypes";
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <NavBar></NavBar>
-        <Switch>
-          <Route exact path="/" component={Properties} />
-          <Route exact path="/dashboard" component={Dashboard} />
+      <SnackBarProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <NavBar></NavBar>
+            <Switch>
+              <Route exact path="/" component={LogIn} />
+              <ProtectedRoute exact path="/dashboard" Comp={Dashboard} />
 
-          <Route path="/properties/:id" component={Properties} />
-          <Route exact path="/properties" component={Properties} />
+              <ProtectedRoute
+                path="/properties/:id"
+                Comp={Properties}
+                allow={[acct.owner]}
+              />
+              <ProtectedRoute
+                exact
+                path="/properties"
+                Comp={Properties}
+                allow={[acct.owner]}
+              />
 
-          <Route exact path="/tenants/:id" component={Tenants} />
-          <Route exact path="/tenants" component={Tenants} />
+              <ProtectedRoute
+                exact
+                path="/tenants/:id"
+                Comp={Tenants}
+                allow={[acct.owner]}
+              />
+              <ProtectedRoute
+                exact
+                path="/tenants"
+                Comp={Tenants}
+                allow={[acct.owner]}
+              />
 
-          <Route exact path="/maintenances/:id" component={Maintenances} />
-          <Route exact path="/maintenances" component={Maintenances} />
+              <ProtectedRoute
+                exact
+                path="/maintenances/:id"
+                Comp={Maintenances}
+              />
+              <ProtectedRoute exact path="/maintenances" Comp={Maintenances} />
 
-          <Route exact path="/invoices/:id" component={Invoices} />
-          <Route exact path="/invoices" component={Invoices} />
+              <ProtectedRoute exact path="/invoices/:id" Comp={Invoices} />
+              <ProtectedRoute exact path="/invoices" Comp={Invoices} />
 
-          <Route exact path="/leases/:id" component={Leases} />
-          <Route exact path="/leases" component={Leases} />
+              <ProtectedRoute exact path="/leases/:id" Comp={Leases} />
+              <ProtectedRoute exact path="/leases" Comp={Leases} />
 
-          <Route exact path="/login" component={Login} />
-          <Route path="*">
-            <Redirect to="/" />
-          </Route>
-        </Switch>
-      </BrowserRouter>
+              <ProtectedRoute exact path="/profile" Comp={Profile} />
+              <RedirectLoggedInRoute exact path="/login" Comp={LogIn} />
+              <Route exact path="/signup" component={SignUp} />
+
+              <Route exact path="/unauthorized" component={Unauthorized} />
+
+              <Route path="*">
+                <Redirect to="/" />
+              </Route>
+            </Switch>
+          </AuthProvider>
+        </BrowserRouter>
+      </SnackBarProvider>
     </ThemeProvider>
   );
 }

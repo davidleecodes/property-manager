@@ -7,14 +7,13 @@ const connectDB = require("./db");
 const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const authRouter = require("./routes/auth");
 const propertyRouter = require("./routes/property");
 const tenantRouter = require("./routes/tenant");
 const maintenanceRouter = require("./routes/maintenance");
 const invoiceRouter = require("./routes/invoice");
 const leaseRouter = require("./routes/lease");
 const userRouter = require("./routes/user");
-// var multer = require("multer");
-// var upload = multer();
 
 const { json, urlencoded } = express;
 const cors = require("cors");
@@ -29,8 +28,6 @@ if (process.env.NODE_ENV === "development") {
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(upload.array());
-// app.use(express.static("public"));
 app.use(express.static(join(__dirname, "public")));
 
 const corsConfig = {
@@ -39,6 +36,7 @@ const corsConfig = {
 };
 app.use(cors(corsConfig));
 
+app.use("/auth", authRouter);
 app.use("/property", propertyRouter);
 app.use("/tenant", tenantRouter);
 app.use("/maintenance", maintenanceRouter);

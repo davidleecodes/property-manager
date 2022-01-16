@@ -26,6 +26,11 @@ const invoiceSchema = new mongoose.Schema({
   is_late: {
     type: Boolean,
   },
+  group: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "group",
+    // required: true,
+  },
 });
 
 module.exports = Invoice = mongoose.model("invoice", invoiceSchema, "invoice");

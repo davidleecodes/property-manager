@@ -12,15 +12,16 @@ import {
 import { CircularProgress } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { getProperties } from "../../helpers/APICalls/property";
-import FormikTextField from "./FormikTextField";
 import FormikSelectField from "./FormikSelectField";
-import FormikImage from "./FormikImage";
 import Paper from "@mui/material/Paper";
-import { DefaultUserImage } from "../../images/images";
 import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
+import UserFormSub, {
+  userInitialValues,
+  userValidationSchema,
+} from "./UserFormSub";
 
-export default function UserForm({ current, handleCancel }) {
+export default function UserFormSubTenant({ current, handleCancel }) {
   const history = useHistory();
   const [propertyData, setPropertyData] = useState([]);
   const { updateSnackBarMessage } = useSnackBar();
@@ -31,54 +32,28 @@ export default function UserForm({ current, handleCancel }) {
       setPropertyData(res);
     });
   }, []);
-  const accountTypes = [
-    { name: "tenant", label: "Tenant" },
-    { name: "admin", label: "Admin" },
-    { name: "maintenance", label: "Maintenance" },
-    { name: "owner", label: "Owner" },
-  ];
+
   const initialValues = {
-    first_name: "",
-    last_name: "",
-    image_url: "",
-    phone_number: "",
-    email: "",
-    account_type: "",
-    password: "",
+    account_type: "tenant",
     property: "",
     unit: "",
+    user: userInitialValues,
   };
 
   console.log(current);
   if (current) {
-    initialValues.first_name = current.user.first_name;
-    initialValues.last_name = current.user.last_name;
-    initialValues.image_url = current.user.image_url;
-    initialValues.phone_number = current.user.phone_number;
-    initialValues.email = current.user.email;
     initialValues.account_type = current.user.account_type;
-    // initialValues.password = current.user.password;
     initialValues.property = current.property._id;
     initialValues.unit = current.unit._id;
   }
 
   const validationSchema = Yup.object().shape({
-    first_name: Yup.string()
-      .required("Property Name is required")
-      .max(40, "Property Name is too long"),
-    last_name: Yup.string().required("last_name is required"),
-    image_url: Yup.mixed(),
-    phone_number: Yup.string().required("phone_number is required"),
-    email: Yup.string().email().required("email is required"),
     account_type: Yup.string().required("account_type is required"),
-    password: current
-      ? Yup.string()
-      : Yup.string().required("password is required"),
-    // property: Yup.string().required("property is required"),
-    // unit: Yup.string().required("unit is required"),
     property: Yup.string(),
     unit: Yup.string(),
+    user: userValidationSchema,
   });
+
   function handleSubmit(values, { setSubmitting }) {
     if (current) {
       editTenant(current.user._id, current._id, values).then((data) => {
@@ -88,24 +63,13 @@ export default function UserForm({ current, handleCancel }) {
       });
     } else {
       newTenant(values).then((data) => {
-        setSubmitting(true);
-        if (data.error) {
-          console.error({ error: data.error.message });
-          setSubmitting(false);
-        } else if (data.success) {
-          setSubmitting(false);
-          history.push({
-            pathname: `/tenants/${data.success.tenant._id}`,
-          });
-        } else {
-          // should not get here from backend but this catch is for an unknown issue
-          console.error({ data });
-          setSubmitting(false);
-        }
+        const onSuccess = () => {
+          history.push(`/tenants/${data.success.tenant._id}`);
+        };
+        submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     }
   }
-
   function handleDelete() {
     deleteTenant(current._id).then((data) => {
       function onSuccess() {
@@ -144,15 +108,7 @@ export default function UserForm({ current, handleCancel }) {
                   Tenant
                 </Typography>
                 <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <FormikImage
-                      label="image"
-                      formikKey="image_url"
-                      defaultImage={DefaultUserImage}
-                      avatar
-                    />
-                  </Grid>
-
+                  <UserFormSub namespace="user" />
                   <Grid item xs={12} sm={6}>
                     <FormikSelectField
                       label="Property"
@@ -181,40 +137,6 @@ export default function UserForm({ current, handleCancel }) {
                       itemValue={(item) => item._id}
                       itemLabel={(item) => item.name}
                     />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <FormikTextField
-                      label="First Name"
-                      formikKey="first_name"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormikTextField label="Last Name" formikKey="last_name" />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <FormikTextField
-                      label="Phone Number"
-                      formikKey="phone_number"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormikTextField label="Email" formikKey="email" />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <FormikSelectField
-                      label="Account type"
-                      formikKey="account_type"
-                      itemArray={accountTypes}
-                      itemValue={(item) => item.name}
-                      itemLabel={(item) => item.label}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <FormikTextField label="Password" formikKey="password" />
                   </Grid>
 
                   <Grid item container spacing={1} justifyContent="flex-end">

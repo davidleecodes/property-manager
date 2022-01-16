@@ -30,6 +30,11 @@ const maintenaceSchema = new mongoose.Schema({
   media: {
     type: [],
   },
+  group: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "group",
+    // required: true,
+  },
 });
 
 module.exports = Maintenance = mongoose.model(

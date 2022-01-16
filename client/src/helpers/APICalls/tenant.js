@@ -35,7 +35,7 @@ export async function newTenant(values) {
     credentials: "include",
     body: formData,
   };
-  return await fetch(`${serverPath}/user/new`, fetchOptions)
+  return await fetch(`${serverPath}/auth/register`, fetchOptions)
     .then((res) => res.json())
     .catch(() => ({
       error: { message: "Unable to connect to server. Please try again" },
@@ -54,6 +54,18 @@ export async function editTenant(user_id, tenant_id, values) {
     body: formData,
   };
   return await fetch(`${serverPath}/user/edit/${user_id}`, fetchOptions)
+    .then((res) => res.json())
+    .catch(() => ({
+      error: { message: "Unable to connect to server. Please try again" },
+    }));
+}
+
+export async function deleteTenant(id) {
+  const fetchOptions = {
+    method: "Delete",
+    credentials: "include",
+  };
+  return await fetch(`${serverPath}/tenant/delete/${id}`, fetchOptions)
     .then((res) => res.json())
     .catch(() => ({
       error: { message: "Unable to connect to server. Please try again" },

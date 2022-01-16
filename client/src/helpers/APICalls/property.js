@@ -70,3 +70,15 @@ export async function editProperty(id, values) {
       error: { message: "Unable to connect to server. Please try again" },
     }));
 }
+
+export async function deleteProperty(id) {
+  const fetchOptions = {
+    method: "Delete",
+    credentials: "include",
+  };
+  return await fetch(`${serverPath}/property/delete/${id}`, fetchOptions)
+    .then((res) => res.json())
+    .catch(() => ({
+      error: { message: "Unable to connect to server. Please try again" },
+    }));
+}

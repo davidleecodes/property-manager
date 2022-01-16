@@ -6,8 +6,19 @@ const { removeImage } = require("../utils/cloudinary");
 //@route GET /maintenance
 //get list of maintenances
 exports.getMaintenances = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const groupId = req.user.group;
+  const acctType = req.user.account_type;
+
   try {
-    const MaintenaceList = await Maintenance.find()
+    let query = {
+      group: groupId,
+    };
+    if (acctType === "tenant") {
+      const tenant = await Tenant.findOne({ user: userId });
+      query.tenant = tenant._id;
+    }
+    const MaintenaceList = await Maintenance.find(query)
       .populate({
         path: "tenant",
         populate: [{ path: "user" }, { path: "unit" }],
@@ -30,9 +41,20 @@ exports.getMaintenances = asyncHandler(async (req, res) => {
 //get maintenance for id
 exports.getMaintenanceForId = asyncHandler(async (req, res) => {
   const id = req.params.id;
-
+  const userId = req.user._id;
+  const groupId = req.user.group;
+  const acctType = req.user.account_type;
   try {
-    const maintenance = await Maintenance.findById(id)
+    let query = {
+      _id: id,
+      group: groupId,
+    };
+    if (acctType === "tenant") {
+      const tenant = await Tenant.findOne({ user: userId });
+      query.tenant = tenant._id;
+    }
+    console.log(query);
+    const maintenance = await Maintenance.findOne(query)
       .populate({
         path: "tenant",
         populate: [{ path: "user" }, { path: "unit" }],
@@ -55,6 +77,8 @@ exports.getMaintenanceForId = asyncHandler(async (req, res) => {
 //@route Post /maintenance/new
 //post maintenance
 exports.newMaintenance = asyncHandler(async (req, res) => {
+  const groupId = req.user.group;
+
   const { tenant, property, title, body, status, location } = JSON.parse(
     req.body.data
   );
@@ -66,6 +90,7 @@ exports.newMaintenance = asyncHandler(async (req, res) => {
     body,
     status,
     location,
+    group: groupId,
   });
   if (req.files) {
     let files = req.files.map((f) => f.path);
@@ -125,4 +150,28 @@ exports.editMaintenance = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Invalid request data");
   }
+});
+
+//@route Delete /maintenance/delete/:id
+//delete maintenance
+exports.deleteMaintenance = asyncHandler(async (req, res) => {
+  console.log("DELETE");
+  const maintenanceId = req.params.id;
+  const groupId = req.user.group;
+  let maintenance;
+
+  if (maintenanceId) {
+    maintenance = await Maintenance.findOneAndDelete({
+      _id: maintenanceId,
+      group: groupId,
+    });
+  }
+  if (!maintenance) {
+    res.status(404);
+    throw new Error("Invalid requests");
+  }
+
+  res.status(200).json({
+    success: { maintenance },
+  });
 });

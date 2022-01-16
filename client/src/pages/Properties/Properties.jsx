@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { getProperties } from "../../helpers/APICalls/property";
 import PropertyView from "./PropertyView";
 import PgSideAndView from "../../components/PgSideAndView";
 import PropertiesSideNav from "./PropertiesSideNav";
 
 export default function Properties() {
-  let { id } = useParams();
+  const { id } = useParams();
   const [currentPropertyId, setCurrentPropertyId] = useState();
   const [propertiesData, setPropertiesData] = useState([]);
-  let history = useHistory();
+  const history = useHistory();
+  const location = useLocation();
+
   useEffect(() => {
-    getProperties().then((res) => {
-      setPropertiesData(res);
-    });
-  }, []);
+    if (location.state) {
+      setPropertiesData(location.state.properties);
+    } else {
+      getProperties().then((res) => {
+        setPropertiesData(res);
+      });
+    }
+  }, [location]);
 
   useEffect(() => {
     if (!id && propertiesData.length > 0) {

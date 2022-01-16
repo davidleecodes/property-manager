@@ -5,9 +5,9 @@ const multer = require("multer");
 const { storageUser } = require("../utils/cloudinary");
 const upload = multer({ storage: storageUser });
 
-const { newUser, editUser } = require("../controllers/user");
+const { editUser } = require("../controllers/user");
 
-router.route("/new").post(upload.single("file"), newUser);
+// router.route("/new").post(upload.single("file"), newUser);
 router.route("/edit/:id").patch(upload.single("file"), editUser);
 
 module.exports = router;

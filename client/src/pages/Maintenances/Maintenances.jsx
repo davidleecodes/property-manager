@@ -5,7 +5,7 @@ import MaintenanceView from "./MaintenanceView";
 import PgSideAndView from "../../components/PgSideAndView";
 import MaintenanceSideNav from "./MaintenancesSideNav";
 
-export default function Maintance() {
+export default function Maintenance() {
   let { id } = useParams();
   const [currentMaintenanceId, setCurrentMaintenanceId] = useState(id);
 

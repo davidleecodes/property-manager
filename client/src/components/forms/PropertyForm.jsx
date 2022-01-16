@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { newProperty, editProperty } from "../../helpers/APICalls/property";
+import {
+  newProperty,
+  editProperty,
+  deleteProperty,
+} from "../../helpers/APICalls/property";
 import { CircularProgress } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import FormikTextField from "./FormikTextField";
@@ -12,9 +16,14 @@ import FormikMultiText from "./FormikMultiText";
 import FormikImage from "./FormikImage";
 import Paper from "@mui/material/Paper";
 import { DefaultPropertyImage } from "../../images/images";
+import { useSnackBar } from "../../context/useSnackbarContext";
+import { submittedForm } from "./formHelper";
 
 export default function PropertyForm({ currentProperty, handleCancel }) {
   const history = useHistory();
+  const { updateSnackBarMessage } = useSnackBar();
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+
   const initialValues = {
     name: "",
     units: [],
@@ -59,39 +68,34 @@ export default function PropertyForm({ currentProperty, handleCancel }) {
   function handleSubmit(values, { setSubmitting }) {
     if (currentProperty) {
       editProperty(currentProperty._id, values).then((data) => {
-        setSubmitting(true);
-        if (data.error) {
-          console.error({ error: data.error.message });
-          setSubmitting(false);
-        } else if (data.success) {
-          setSubmitting(false);
-          history.go(0);
-        } else {
-          // should not get here from backend but this catch is for an unknown issue
-          console.error({ data });
-          setSubmitting(false);
-        }
+        const onSuccess = () => history.go(0);
+        submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     } else {
       newProperty(values).then((data) => {
-        setSubmitting(true);
-        if (data.error) {
-          console.error({ error: data.error.message });
-          setSubmitting(false);
-        } else if (data.success) {
-          setSubmitting(false);
-          history.push({
-            pathname: `/properties/${data.success.property._id}`,
-          });
-        } else {
-          // should not get here from backend but this catch is for an unknown issue
-          console.error({ data });
-          setSubmitting(false);
-        }
+        const onSuccess = () => {
+          history.push(`/properties/${data.success.property._id}`);
+        };
+        submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     }
   }
-  function handleDelete() {}
+  function handleDelete() {
+    deleteProperty(currentProperty._id).then((data) => {
+      function onSuccess(data) {
+        history.push({
+          pathname: `/properties`,
+          state: { properties: data.success.propertyList },
+        });
+      }
+      submittedForm(
+        updateSnackBarMessage,
+        setDeleteSubmitting,
+        data,
+        onSuccess
+      );
+    });
+  }
 
   return (
     <Grid item>

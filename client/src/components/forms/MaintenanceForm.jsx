@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import {
   newMaintenance,
   editMaintenance,
+  deleteMaintenance,
 } from "../../helpers/APICalls/maintenance";
 import { CircularProgress } from "@mui/material";
 import { useHistory } from "react-router-dom";
@@ -15,9 +16,13 @@ import FormikSelectField from "./FormikSelectField";
 import { getTenants } from "../../helpers/APICalls/tenant";
 import FormikMultiImage from "./FormikMultiImage";
 import Paper from "@mui/material/Paper";
+import { useSnackBar } from "../../context/useSnackbarContext";
+import { submittedForm } from "./formHelper";
 
 export default function MaintenanceForm({ currentMaintenance, handleCancel }) {
   const history = useHistory();
+  const { updateSnackBarMessage } = useSnackBar();
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
   const initialValues = {
     tenant: "",
@@ -28,7 +33,6 @@ export default function MaintenanceForm({ currentMaintenance, handleCancel }) {
     location: "",
   };
 
-  console.log(currentMaintenance);
   if (currentMaintenance) {
     initialValues.tenant = currentMaintenance.tenant._id;
     initialValues.title = currentMaintenance.title;
@@ -60,43 +64,37 @@ export default function MaintenanceForm({ currentMaintenance, handleCancel }) {
   function handleSubmit(values, { setSubmitting }) {
     if (currentMaintenance) {
       editMaintenance(currentMaintenance._id, values).then((data) => {
-        setSubmitting(true);
-        if (data.error) {
-          console.error({ error: data.error.message });
-          setSubmitting(false);
-        } else if (data.success) {
-          setSubmitting(false);
-          history.go(0);
-        } else {
-          // should not get here from backend but this catch is for an unknown issue
-          console.error({ data });
-          setSubmitting(false);
-        }
+        const onSuccess = () => history.go(0);
+        submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     } else {
       values.property = tenantData.filter(
         (t) => t._id === values.tenant
       )[0].property;
       newMaintenance(values).then((data) => {
-        setSubmitting(true);
-        console.log(data);
-        if (data.error) {
-          console.error({ error: data.error.message });
-          setSubmitting(false);
-        } else if (data.success) {
-          setSubmitting(false);
-          history.push({
-            pathname: `/maintenances/${data.success.maintenance._id}`,
-          });
-        } else {
-          // should not get here from backend but this catch is for an unknown issue
-          console.error({ data });
-          setSubmitting(false);
-        }
+        const onSuccess = () => {
+          history.push(`/maintenances/${data.success.maintenance._id}`);
+        };
+        submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     }
   }
-  function handleDelete() {}
+  function handleDelete() {
+    deleteMaintenance(currentMaintenance).then((data) => {
+      function onSuccess(data) {
+        history.push({
+          pathname: `/properties`,
+          state: { properties: data.success.propertyList },
+        });
+      }
+      submittedForm(
+        updateSnackBarMessage,
+        setDeleteSubmitting,
+        data,
+        onSuccess
+      );
+    });
+  }
 
   return (
     <Grid item xs={12}>

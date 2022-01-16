@@ -11,7 +11,7 @@ export default function FormikImage({
   avatar,
   ...props
 }) {
-  const [field, meta, helpers] = useField(formikKey);
+  const [field, helpers] = useField(formikKey);
   function handleImageError(e) {
     e.target.src = defaultImage;
   }

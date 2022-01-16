@@ -12,8 +12,10 @@ const multer = require("multer");
 //@route GET /properties
 //get list of properties
 exports.getProperties = asyncHandler(async (req, res) => {
+  const groupId = req.user.group;
+
   try {
-    const propertyList = await Property.find().populate({
+    const propertyList = await Property.find({ group: groupId }).populate({
       path: "units",
     });
     if (propertyList) {
@@ -29,9 +31,10 @@ exports.getProperties = asyncHandler(async (req, res) => {
 //@route GET /property/:id
 //get property for id
 exports.getPropertyForId = asyncHandler(async (req, res) => {
+  const groupId = req.user.group;
   const id = req.params.id;
   try {
-    const property = await Property.findById(id);
+    const property = await Property.findOne({ _id: id, group: groupId });
     property.populate({
       path: "units",
       // select: "name",
@@ -63,6 +66,8 @@ exports.getPropertyForId = asyncHandler(async (req, res) => {
 //@route Post /property/new
 //post property
 exports.newProperty = asyncHandler(async (req, res) => {
+  const groupId = req.user.group;
+
   const {
     name,
     street_name,
@@ -84,6 +89,7 @@ exports.newProperty = asyncHandler(async (req, res) => {
       zip_code,
       country,
     },
+    group: groupId,
   });
   if (req.file) {
     property.image_url = req.file.path;
@@ -92,7 +98,11 @@ exports.newProperty = asyncHandler(async (req, res) => {
 
   const property_units = await Promise.all(
     units.map(async (u) => {
-      let unit = await Unit.create({ name: u, property: property._id });
+      let unit = await Unit.create({
+        name: u,
+        property: property._id,
+        group: groupId,
+      });
       return unit._id;
     })
   );
@@ -177,4 +187,30 @@ exports.editProperty = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Invalid request data");
   }
+});
+
+//@route Delete /property/delete/:id
+//delete property
+exports.deleteProperty = asyncHandler(async (req, res) => {
+  const propertyId = req.params.id;
+  const groupId = req.user.group;
+  let property;
+
+  if (propertyId) {
+    property = await Property.findOneAndDelete({
+      _id: propertyId,
+      group: groupId,
+    });
+  }
+  const propertyList = await Property.find({ group: groupId }).populate({
+    path: "units",
+  });
+  if (!property && propertyList) {
+    res.status(404);
+    throw new Error("Invalid requests");
+  }
+
+  res.status(200).json({
+    success: { propertyList },
+  });
 });

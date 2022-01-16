@@ -9,10 +9,9 @@ const decodeToken = require("../utils/decodeToken");
 //@route GET /tenants
 //get list of tenants
 exports.getTenants = asyncHandler(async (req, res) => {
+  const groupId = req.user.group;
   try {
-    // const tenantList = await Tenant.find().populate("user");
-    // const tenantList = await User.find();
-    const tenantList = await Tenant.find()
+    const tenantList = await Tenant.find({ group: groupId })
       .populate({
         path: "property",
       })
@@ -23,6 +22,7 @@ exports.getTenants = asyncHandler(async (req, res) => {
         path: "unit",
       });
 
+    console.log(tenantList);
     if (tenantList) {
       res.status(200).json(tenantList);
     } else {
@@ -103,4 +103,28 @@ exports.newTenant = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Invalid request data");
   }
+});
+
+//@route Delete /tenant/delete/:id
+//delete property
+exports.deleteTenant = asyncHandler(async (req, res) => {
+  console.log("DELETE");
+  const tenantId = req.params.id;
+  const groupId = req.user.group;
+  let tenant;
+
+  if (tenantId) {
+    tenant = await Tenant.findOneAndDelete({
+      _id: tenantId,
+      group: groupId,
+    });
+  }
+  if (!tenant) {
+    res.status(404);
+    throw new Error("Invalid requests");
+  }
+
+  res.status(200).json({
+    success: { tenant },
+  });
 });

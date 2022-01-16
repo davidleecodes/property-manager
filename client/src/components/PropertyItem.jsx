@@ -4,8 +4,12 @@ import Grid from "@mui/material/Grid";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
 import { DefaultPropertyImage } from "../images/images";
+import { useAuth } from "../context/useAuthContext";
+import acct from "../helpers/accoutTypes";
 
 export default function PropertyItem({ property }) {
+  const { loggedInUser } = useAuth();
+
   const fullAddress = (address) => {
     return (
       <React.Fragment>
@@ -20,7 +24,9 @@ export default function PropertyItem({ property }) {
       <Grid item sx={{ mr: 1 }}>
         <Link
           underline="none"
-          component={RouterLink}
+          component={
+            loggedInUser.account_type === acct.tenant ? Link : RouterLink
+          }
           to={`/properties/${property._id}`}
         >
           <img

@@ -10,7 +10,6 @@ export default function FormikTextField({ label, formikKey, ...props }) {
       label={label}
       fullWidth
       variant="standard"
-      autoFocus
       helperText={meta.touched ? meta.error : ""}
       error={meta.touched && Boolean(meta.error)}
       value={field.value}
