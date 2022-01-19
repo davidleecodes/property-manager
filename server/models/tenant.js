@@ -32,9 +32,10 @@ const tenantSchema = new mongoose.Schema({
 });
 
 tenantSchema.post(["findOneAndDelete", "remove"], async function (doc) {
+  console.log(doc);
   if (doc) {
     //todo: check if user is also admin before delete
-    const user = await User.find({
+    const user = await User.findOne({
       _id: doc.user,
     });
     const maintenances = await Maintenance.find({
@@ -50,16 +51,18 @@ tenantSchema.post(["findOneAndDelete", "remove"], async function (doc) {
     maintenances.forEach((maintenance) => {
       maintenance.remove();
     });
+    console.log(user);
+
     invoices.forEach((invoice) => {
       invoice.remove();
     });
     leases.forEach((lease) => {
       lease.remove();
     });
-    console.log("User delete result: ", user.length);
-    console.log("Maintenance delete result: ", maintenance.length);
-    console.log("Invoice delete result: ", invoice.length);
-    console.log("Lease delete result: ", lease.length);
+    console.log("here");
+    console.log("Maintenance delete result: ", maintenances.length);
+    console.log("Invoice delete result: ", invoices.length);
+    console.log("Lease delete result: ", leases.length);
   }
 });
 

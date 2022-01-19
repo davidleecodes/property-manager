@@ -17,6 +17,8 @@ import IconButton from "@mui/material/IconButton";
 import { Grid } from "@mui/material";
 import { theme } from "./../themes/theme";
 import { alpha } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+
 const linkStyle = {
   "&.selected": {
     color: theme.palette.primary.main,
@@ -34,6 +36,7 @@ function Panel({
   onClear,
   sortParams,
   selectedSort,
+  isAdd,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = (e) => {
@@ -91,6 +94,20 @@ function Panel({
       </Grid>
 
       <List>
+        {isAdd && (
+          <ListItemButton
+            alignItems="center"
+            onClick={handleChange("panel1")}
+            component={RouterLink}
+            to={`/${path}/add`}
+            activeClassName="selected"
+            sx={linkStyle}
+            selected={selectedId === "add"}
+          >
+            <AddIcon />
+            add
+          </ListItemButton>
+        )}
         {data.length > 0 &&
           data.map((item) => (
             <React.Fragment key={item._id}>
@@ -121,6 +138,7 @@ export default function SideNav({
   sortParams,
   searchParms,
   collapsedText,
+  isAdd,
 }) {
   const [expanded, setExpanded] = React.useState(false);
   const [sortedData, setSortedData] = useState([]);
@@ -191,7 +209,8 @@ export default function SideNav({
             id="panel1bh-header"
           >
             <Typography sx={{ width: "66%", flexShrink: 0 }}>
-              {currentSelection && collapsedText.primary(currentSelection)}
+              {(currentSelection && collapsedText.primary(currentSelection)) ||
+                "add"}
             </Typography>
             <Typography sx={{ color: "text.secondary" }}>
               {currentSelection && collapsedText.secondary(currentSelection)}
@@ -209,6 +228,7 @@ export default function SideNav({
               onClear={handleClearSearch}
               sortParams={sortParams}
               selectedSort={selectedSort}
+              isAdd={isAdd}
             />
           </AccordionDetails>
         </Accordion>
@@ -225,6 +245,7 @@ export default function SideNav({
           onClear={handleClearSearch}
           sortParams={sortParams}
           selectedSort={selectedSort}
+          isAdd={isAdd}
         />
       </Box>
     </React.Fragment>

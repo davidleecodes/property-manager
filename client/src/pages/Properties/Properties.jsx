@@ -29,7 +29,7 @@ export default function Properties() {
     } else if (id && propertiesData.length > 0) {
       setCurrentPropertyId(id);
     }
-  }, [history, propertiesData, currentPropertyId, id]);
+  }, [history, propertiesData, setCurrentPropertyId, id]);
 
   return (
     <PgSideAndView

@@ -59,6 +59,7 @@ export default function MaintenanceSideNav({ selectedId, data }) {
       sortParams={sortParams}
       searchParms={searchParms}
       collapsedText={collapsedText}
+      isAdd={true}
     />
   );
 }

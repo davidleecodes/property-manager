@@ -65,6 +65,7 @@ export default function PropertiesSideNav({ selectedId, data }) {
       sortParams={sortParams}
       searchParms={searchParms}
       collapsedText={collapsedText}
+      isAdd={true}
     />
   );
 }

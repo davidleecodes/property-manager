@@ -55,7 +55,6 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
   // console.log("File", req.file);
 
   if (user) {
-    const { password, ...userData } = user.toJSON();
     console.log("TEST");
     let tenant;
     if (account_type === "tenant") {
@@ -78,6 +77,11 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
         secure: process.env.NODE_ENV === "development" ? false : true,
       });
     }
+
+    if (tenant) {
+      user.set("tenant", tenant, { strict: false });
+    }
+    const { password, ...userData } = user.toJSON();
 
     res.status(201).json({
       success: {
@@ -104,7 +108,6 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
   if (user && (await user.matchPassword(password))) {
     const token = generateToken(user._id, user.group, user.account_type);
     const secondsInWeek = 604800;
-    const { password, ...userData } = user.toJSON();
 
     console.log("tokenIN", token);
     res.cookie("token", token, {
@@ -114,6 +117,13 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
       secure: process.env.NODE_ENV === "development" ? false : true,
     });
 
+    if (user.account_type === "tenant") {
+      const tenant = await Tenant.findOne({ user: user._id }).populate({
+        path: "unit",
+      });
+      user.set("tenant", tenant, { strict: false });
+    }
+    const { password, ...userData } = user.toJSON();
     res.status(200).json({
       success: {
         user: {
@@ -137,6 +147,12 @@ exports.loadUser = asyncHandler(async (req, res, next) => {
   if (!user) {
     res.status(401);
     throw new Error("Not authorized");
+  }
+  if (user.account_type === "tenant") {
+    const tenant = await Tenant.findOne({ user: user._id }).populate({
+      path: "unit",
+    });
+    user.set("tenant", tenant, { strict: false });
   }
   const { password, ...userData } = user.toJSON();
 

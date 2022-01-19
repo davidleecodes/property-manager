@@ -1,12 +1,12 @@
 const { check, validationResult } = require("express-validator");
 
 exports.validateRegister = [
-  check("email", "Please enter a valid email address").isEmail(),
+  // check("email", "Please enter a valid email address").isEmail(),
   check(
     "password",
-    "Please enter a password with 6 or more characters"
+    "Please enter a password with 3 or more characters"
   ).isLength({
-    min: 6,
+    min: 3,
   }),
   (req, res, next) => {
     const errors = validationResult(req);

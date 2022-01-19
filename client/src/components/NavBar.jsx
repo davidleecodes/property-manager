@@ -7,11 +7,13 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useAuth } from "../context/useAuthContext";
 import acct from "../helpers/accoutTypes";
+import { theme } from "./../themes/theme";
+
 const linkStyle = {
   my: 1,
   mx: 1.5,
   "&.selected": {
-    color: "red",
+    color: theme.palette.secondary.main,
   },
 };
 export default function Nav() {
@@ -31,7 +33,6 @@ export default function Nav() {
   } else {
     linkPaths = [
       { label: "Dashboard", path: "/dashboard" },
-      { label: "Tenants", path: "/tenants" },
       { label: "Maintenances", path: "/maintenances" },
       { label: "Invoices", path: "/invoices" },
       { label: "Leases", path: "/leases" },
@@ -45,8 +46,8 @@ export default function Nav() {
       sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
     >
       <Toolbar sx={{ flexWrap: "wrap" }}>
-        <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-          Company name
+        <Typography variant="h4" color="secondary" noWrap sx={{ flexGrow: 1 }}>
+          tuk•den
         </Typography>
 
         <nav>

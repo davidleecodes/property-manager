@@ -12,8 +12,13 @@ import LoadingView from "../../components/LoadingView";
 import dateFormatter from "./../../helpers/dateFormatter";
 import UserForm from "../../components/forms/UserForm";
 import MaintenanceForm from "./../../components/forms/MaintenanceForm";
+import { useAuth } from "../../context/useAuthContext";
+import PropertyForm from "../../components/forms/PropertyForm";
 
 export default function PropertyView({ propertyId }) {
+  const { loggedInUser } = useAuth();
+  const isAdd = propertyId === "add";
+
   const [tenantMap, setTenantMap] = useState();
   const [tenantData, setTenantData] = useState([]);
   const [maintenanceData, setMaintenanceData] = useState([]);
@@ -22,7 +27,8 @@ export default function PropertyView({ propertyId }) {
   const [propertyData, setPropertyData] = useState();
 
   useEffect(() => {
-    if (propertyId) {
+    setPropertyData(null);
+    if (!isAdd && propertyId) {
       getPropertyForId(propertyId).then((res) => {
         setPropertyData(res);
         if (!res.message) {
@@ -38,7 +44,7 @@ export default function PropertyView({ propertyId }) {
         }
       });
     }
-  }, [propertyId]);
+  }, [propertyId, isAdd]);
 
   const tenantColumns = [
     {
@@ -269,6 +275,16 @@ export default function PropertyView({ propertyId }) {
       terms: [(item) => tenantMap[item.tenant].user.first_name],
     },
   ];
+
+  if (isAdd) {
+    return (
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <PropertyForm />
+        </Grid>
+      </Grid>
+    );
+  }
   return (
     <LoadingView
       data={propertyData}
@@ -293,7 +309,7 @@ export default function PropertyView({ propertyId }) {
             columns={maintenanceColumns}
             sortParams={maintenanceSortParams}
             toggleLabel="add"
-            toggleContent={<MaintenanceForm />}
+            toggleContent={<MaintenanceForm tenantList={tenantData} />}
           ></TabTableView>
           <TabTableView
             label={"Invoices"}

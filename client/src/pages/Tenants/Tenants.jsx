@@ -25,7 +25,7 @@ export default function Tenants() {
     } else if (id && tenantData.length > 0) {
       setCurrentTenantId(id);
     }
-  }, [history, tenantData, currentTenantId, id]);
+  }, [history, tenantData, setCurrentTenantId, id]);
 
   return (
     <PgSideAndView

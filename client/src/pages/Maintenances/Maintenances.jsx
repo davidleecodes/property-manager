@@ -8,7 +8,6 @@ import MaintenanceSideNav from "./MaintenancesSideNav";
 export default function Maintenance() {
   let { id } = useParams();
   const [currentMaintenanceId, setCurrentMaintenanceId] = useState(id);
-
   const [maintenanceData, setMaintenanceData] = useState([]);
   let history = useHistory();
   useEffect(() => {
@@ -26,7 +25,6 @@ export default function Maintenance() {
       setCurrentMaintenanceId(id);
     }
   }, [history, maintenanceData, setCurrentMaintenanceId, id]);
-
   return (
     <PgSideAndView
       side={<MaintenanceSideNav selectedId={id} data={maintenanceData} />}

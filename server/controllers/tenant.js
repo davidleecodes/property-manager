@@ -114,6 +114,7 @@ exports.deleteTenant = asyncHandler(async (req, res) => {
   let tenant;
 
   if (tenantId) {
+    console.log(tenantId, groupId);
     tenant = await Tenant.findOneAndDelete({
       _id: tenantId,
       group: groupId,

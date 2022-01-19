@@ -9,15 +9,21 @@ import LoadingView from "../../components/LoadingView";
 import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
 import MaintenanceForm from "../../components/forms/MaintenanceForm";
+import { useAuth } from "../../context/useAuthContext";
+import UserFormTenant from "../../components/forms/UserFormTenant";
 
 export default function TenantView({ tenantId }) {
+  const { loggedInUser } = useAuth();
+  const isAdd = tenantId === "add";
+
   const [maintenanceData, setMaintenanceData] = useState([]);
   const [invoiceData, setInvoiceData] = useState([]);
   const [leaseData, setLeaseData] = useState([]);
   const [tenantData, setTenantData] = useState();
 
   useEffect(() => {
-    if (tenantId) {
+    setTenantData(null);
+    if (!isAdd && tenantId) {
       getTenantForId(tenantId).then((res) => {
         setTenantData(res);
         setMaintenanceData(res.maintenances);
@@ -25,7 +31,7 @@ export default function TenantView({ tenantId }) {
         setLeaseData(res.leases);
       });
     }
-  }, [tenantId]);
+  }, [tenantId, isAdd]);
 
   const maintenanceColumns = [
     {
@@ -121,6 +127,16 @@ export default function TenantView({ tenantId }) {
       ),
     },
   ];
+
+  if (isAdd) {
+    return (
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <UserFormTenant />
+        </Grid>
+      </Grid>
+    );
+  }
 
   return (
     <LoadingView

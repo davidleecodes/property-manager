@@ -56,6 +56,7 @@ export default function TenantSideNav({ selectedId, data }) {
       sortParams={sortParams}
       searchParms={searchParms}
       collapsedText={collapsedText}
+      isAdd={true}
     />
   );
 }

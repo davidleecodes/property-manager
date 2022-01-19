@@ -7,16 +7,21 @@ import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
 import MaintenanceForm from "../../components/forms/MaintenanceForm";
 import Typography from "@mui/material/Typography";
+import { useAuth } from "../../context/useAuthContext";
 
 export default function MaintenanceView({ maintenanceId }) {
+  const { loggedInUser } = useAuth();
   const [maintenanceData, setMaintenanceData] = useState();
+  const isAdd = maintenanceId === "add";
+
   useEffect(() => {
-    if (maintenanceId) {
+    setMaintenanceData(null);
+    if (!isAdd && maintenanceId) {
       getMaintenanceForId(maintenanceId).then((res) => {
         setMaintenanceData(res);
       });
     }
-  }, [maintenanceId]);
+  }, [maintenanceId, isAdd]);
 
   const maintenanceColumns = [
     {
@@ -43,6 +48,16 @@ export default function MaintenanceView({ maintenanceId }) {
       content: (maintenance) => <span>{maintenance.status}</span>,
     },
   ];
+
+  if (isAdd) {
+    return (
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <MaintenanceForm />
+        </Grid>
+      </Grid>
+    );
+  }
 
   return (
     <LoadingView

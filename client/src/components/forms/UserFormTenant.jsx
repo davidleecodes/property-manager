@@ -13,7 +13,7 @@ import UserFormBase from "./UserFormBase";
 import FormikSelectField from "./FormikSelectField";
 import { getProperties } from "../../helpers/APICalls/property";
 
-export default function UserFormBaseTen({ current, handleCancel }) {
+export default function UserFormTenant({ current, handleCancel }) {
   const history = useHistory();
   const { updateSnackBarMessage } = useSnackBar();
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);

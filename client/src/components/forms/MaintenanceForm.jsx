@@ -18,11 +18,18 @@ import FormikMultiImage from "./FormikMultiImage";
 import Paper from "@mui/material/Paper";
 import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
-
-export default function MaintenanceForm({ currentMaintenance, handleCancel }) {
+import { useAuth } from "../../context/useAuthContext";
+import acct from "../../helpers/accoutTypes";
+export default function MaintenanceForm({
+  currentMaintenance,
+  handleCancel,
+  tenantList,
+}) {
   const history = useHistory();
+  const { loggedInUser } = useAuth();
   const { updateSnackBarMessage } = useSnackBar();
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const isTenant = loggedInUser.account_type === acct.tenant;
 
   const initialValues = {
     tenant: "",
@@ -41,12 +48,21 @@ export default function MaintenanceForm({ currentMaintenance, handleCancel }) {
     initialValues.location = currentMaintenance.location;
     initialValues.media = currentMaintenance.media;
   }
+  if (isTenant) {
+    initialValues.tenant = loggedInUser.tenant._id;
+  }
   const [tenantData, setTenantData] = useState([]);
   useEffect(() => {
-    getTenants().then((res) => {
-      setTenantData(res);
-    });
-  }, []);
+    if (isTenant) {
+      setTenantData([loggedInUser.tenant]);
+    } else if (tenantList) {
+      setTenantData(tenantList);
+    } else {
+      getTenants().then((res) => {
+        setTenantData(res);
+      });
+    }
+  }, [isTenant, loggedInUser, tenantList]);
   const statusTypes = [
     { name: "open", label: "open" },
     { name: "close", label: "close" },
@@ -129,37 +145,43 @@ export default function MaintenanceForm({ currentMaintenance, handleCancel }) {
                     itemLabel={(item) => item.label}
                   />
                 </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormikSelectField
-                    label="Tenant"
-                    formikKey="tenant"
-                    itemArray={tenantData}
-                    itemValue={(item) => item._id}
-                    itemLabel={(item) =>
-                      `${item.user.first_name} ${item.user.last_name}`
-                    }
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <FormikSelectField
-                    disabled={values.tenant === ""}
-                    label={
-                      values.tenant === "" ? "select tenant first" : "location"
-                    }
-                    formikKey="location"
-                    itemArray={[
-                      { _id: "common", name: "common" },
-                      values.tenant &&
-                        tenantData.length > 0 &&
-                        tenantData.filter((t) => t._id === values.tenant)[0]
-                          .unit,
-                    ]}
-                    itemValue={(item) => item._id}
-                    itemLabel={(item) => item.name}
-                  />
-                </Grid>
+                {!currentMaintenance && (
+                  <>
+                    {!isTenant && (
+                      <Grid item xs={12} sm={6}>
+                        <FormikSelectField
+                          label="Tenant"
+                          formikKey="tenant"
+                          itemArray={tenantData}
+                          itemValue={(item) => item._id}
+                          itemLabel={(item) =>
+                            `${item.user.first_name} ${item.user.last_name}`
+                          }
+                        />
+                      </Grid>
+                    )}
+                    <Grid item xs={12} sm={6}>
+                      <FormikSelectField
+                        disabled={values.tenant === ""}
+                        label={
+                          values.tenant === ""
+                            ? "select tenant first"
+                            : "location"
+                        }
+                        formikKey="location"
+                        itemArray={[
+                          { _id: "common", name: "common" },
+                          values.tenant &&
+                            tenantData.length > 0 &&
+                            tenantData.filter((t) => t._id === values.tenant)[0]
+                              .unit,
+                        ]}
+                        itemValue={(item) => item._id}
+                        itemLabel={(item) => item.name}
+                      />
+                    </Grid>
+                  </>
+                )}
                 <Grid item xs={12}>
                   <FormikTextField
                     label="Title (short description)"
