@@ -7,14 +7,14 @@ import Dashboard from "./pages/Dashboard";
 import Tenants from "./pages/Tenants/Tenants";
 import Maintenances from "./pages/Maintenances/Maintenances";
 import Invoices from "./pages/Invoices/Invoices";
-import LogIn from "./pages/LogIn/LogIn";
+import Login from "./pages/Login/Login";
 import Leases from "./pages/Leases/Leases";
 import { SnackBarProvider } from "./context/useSnackbarContext";
 import { AuthProvider } from "./context/useAuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RedirectLoggedInRoute from "./components/RedirectLoggedInRoute";
 import Unauthorized from "./pages/Unauthorized";
-import SignUp from "./pages/SignUp/SignUp";
+import Signup from "./pages/Signup/Signup";
 import Profile from "./pages/Profile/Profile";
 import acct from "./helpers/accoutTypes";
 
@@ -26,7 +26,7 @@ function App() {
           <AuthProvider>
             <NavBar></NavBar>
             <Switch>
-              <Route exact path="/" component={LogIn} />
+              <Route exact path="/" component={Login} />
               <ProtectedRoute exact path="/dashboard" Comp={Dashboard} />
 
               <ProtectedRoute
@@ -68,8 +68,8 @@ function App() {
               <ProtectedRoute exact path="/leases" Comp={Leases} />
 
               <ProtectedRoute exact path="/profile" Comp={Profile} />
-              <RedirectLoggedInRoute exact path="/login" Comp={LogIn} />
-              <Route exact path="/signup" component={SignUp} />
+              <RedirectLoggedInRoute exact path="/login" Comp={Login} />
+              <Route exact path="/signup" component={Signup} />
 
               <Route exact path="/unauthorized" component={Unauthorized} />
 
