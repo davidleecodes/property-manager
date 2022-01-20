@@ -10,7 +10,7 @@ import {
   deleteMaintenance,
 } from "../../helpers/APICalls/maintenance";
 import { CircularProgress } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import FormikTextField from "./FormikTextField";
 import FormikSelectField from "./FormikSelectField";
 import { getTenants } from "../../helpers/APICalls/tenant";
@@ -20,12 +20,14 @@ import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
 import { useAuth } from "../../context/useAuthContext";
 import acct from "../../helpers/accoutTypes";
+
 export default function MaintenanceForm({
   currentMaintenance,
   handleCancel,
   tenantList,
 }) {
   const history = useHistory();
+  const location = useLocation();
   const { loggedInUser } = useAuth();
   const { updateSnackBarMessage } = useSnackBar();
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
@@ -41,7 +43,7 @@ export default function MaintenanceForm({
   };
 
   if (currentMaintenance) {
-    initialValues.tenant = currentMaintenance.tenant._id;
+    // initialValues.tenant = currentMaintenance.tenant._id;
     initialValues.title = currentMaintenance.title;
     initialValues.body = currentMaintenance.body;
     initialValues.status = currentMaintenance.status;
@@ -80,7 +82,9 @@ export default function MaintenanceForm({
   function handleSubmit(values, { setSubmitting }) {
     if (currentMaintenance) {
       editMaintenance(currentMaintenance._id, values).then((data) => {
-        const onSuccess = () => history.go(0);
+        const onSuccess = () => {
+          history.go(0);
+        };
         submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     } else {
@@ -89,19 +93,26 @@ export default function MaintenanceForm({
       )[0].property;
       newMaintenance(values).then((data) => {
         const onSuccess = () => {
-          history.push(`/maintenances/${data.success.maintenance._id}`);
+          if (location.pathname.match(/maintenance/)) {
+            history.push(`/maintenances/${data.success.maintenance._id}`);
+            history.go();
+          } else {
+            history.go(0);
+          }
         };
         submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     }
   }
   function handleDelete() {
-    deleteMaintenance(currentMaintenance).then((data) => {
+    deleteMaintenance(currentMaintenance._id).then((data) => {
       function onSuccess(data) {
-        history.push({
-          pathname: `/properties`,
-          state: { properties: data.success.propertyList },
-        });
+        if (location.pathname.match(/maintenance/)) {
+          history.push(`/maintenances`);
+          history.go();
+        } else {
+          history.go(0);
+        }
       }
       submittedForm(
         updateSnackBarMessage,

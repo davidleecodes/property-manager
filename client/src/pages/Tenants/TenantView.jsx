@@ -10,7 +10,7 @@ import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
 import MaintenanceForm from "../../components/forms/MaintenanceForm";
 import { useAuth } from "../../context/useAuthContext";
-import UserFormTenant from "../../components/forms/UserFormTenant";
+import UserFormExt from "../../components/forms/UserFormExt";
 
 export default function TenantView({ tenantId }) {
   const { loggedInUser } = useAuth();
@@ -132,7 +132,7 @@ export default function TenantView({ tenantId }) {
     return (
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <UserFormTenant />
+          <UserFormExt />
         </Grid>
       </Grid>
     );

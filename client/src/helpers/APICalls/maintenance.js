@@ -62,6 +62,7 @@ export async function editMaintenance(id, values) {
   console.log("media", media);
   console.log("fileObjs", fileObjs);
   console.log("fileUrls", fileUrls);
+  console.log("data", data);
   formData.append("data", JSON.stringify(data));
   const fetchOptions = {
     method: "PATCH",

@@ -10,20 +10,27 @@ import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
 import UserFormBase from "./UserFormBase";
 
-export default function UserFormOwner({ current, handleCancel }) {
+export default function UserFormReg({
+  current,
+  handleCancel,
+  label,
+  initValues,
+  isHideDelete,
+}) {
   const history = useHistory();
   const { updateSnackBarMessage } = useSnackBar();
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
   const initialValues = {
-    account_type: "owner",
+    ...initValues,
   };
 
   const validationSchema = {};
 
   function handleSubmit(values, { setSubmitting }) {
     if (current) {
-      editTenant(current.user._id, current._id, values).then((data) => {
+      console.log("UPDATE", current, values);
+      editTenant(current._id, current._id, values).then((data) => {
         setSubmitting(true);
         const onSuccess = () => history.go(0);
         submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
@@ -54,21 +61,28 @@ export default function UserFormOwner({ current, handleCancel }) {
     });
   }
 
+  function cancel() {
+    if (handleCancel) handleCancel();
+    else {
+      history.go(-1);
+    }
+  }
   const child = (values, namespace) => <></>;
 
   return (
     <Grid item>
       <UserFormBase
-        label="Owner"
+        label={label}
         current={current}
         handleSubmit={handleSubmit}
         handleDelete={handleDelete}
-        handleCancel={handleCancel}
+        handleCancel={cancel}
         deleteSubmitting={deleteSubmitting}
         child={child}
         childNamespace="owner"
         childValidationSchema={validationSchema}
         childInitialValues={initialValues}
+        isHideDelete={isHideDelete}
       />
     </Grid>
   );

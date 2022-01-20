@@ -1,9 +1,7 @@
 import Container from "@mui/material/Container";
 import PropertyForm from "../components/forms/PropertyForm";
-import UserForm from "../components/forms/UserForm";
 import MaintenanceForm from "../components/forms/MaintenanceForm";
 import { Grid } from "@mui/material";
-import UserFormTenant from "../components/forms/UserFormTenant";
 
 export default function Dashboard() {
   return (
@@ -11,9 +9,7 @@ export default function Dashboard() {
       Dashboard
       <Grid container spacing={3}>
         {/* <PropertyForm /> */}
-        {/* <UserForm /> */}
-        <MaintenanceForm />
-        <UserFormTenant />
+        {/* <MaintenanceForm /> */}
       </Grid>
     </Container>
   );

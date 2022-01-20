@@ -21,6 +21,7 @@ export default function UserFormBase({
   childNamespace,
   childValidationSchema,
   childInitialValues,
+  isHideDelete,
 }) {
   const initialValues = {
     first_name: "",
@@ -122,7 +123,7 @@ export default function UserFormBase({
                         )}
                       </Button>
                     </Grid>
-                    {current && (
+                    {current && !isHideDelete && (
                       <>
                         <Grid item>
                           <Button onClick={handleDelete} variant="outlined">

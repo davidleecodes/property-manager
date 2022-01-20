@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import * as Yup from "yup";
 import {
@@ -13,17 +13,21 @@ import UserFormBase from "./UserFormBase";
 import FormikSelectField from "./FormikSelectField";
 import { getProperties } from "../../helpers/APICalls/property";
 
-export default function UserFormTenant({ current, handleCancel }) {
+export default function UserFormExt({ current, handleCancel, initalProperty }) {
   const history = useHistory();
   const { updateSnackBarMessage } = useSnackBar();
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
   const [propertyData, setPropertyData] = useState([]);
 
   useEffect(() => {
-    getProperties().then((res) => {
-      setPropertyData(res);
-    });
-  }, []);
+    if (initalProperty) {
+      setPropertyData([initalProperty]);
+    } else {
+      getProperties().then((res) => {
+        setPropertyData(res);
+      });
+    }
+  }, [initalProperty]);
 
   const initialValues = {
     account_type: "tenant",
@@ -34,6 +38,9 @@ export default function UserFormTenant({ current, handleCancel }) {
   if (current) {
     initialValues.property = current.property._id;
     initialValues.unit = current.unit._id;
+  }
+  if (initalProperty) {
+    initialValues.property = initalProperty._id;
   }
 
   const validationSchema = {
@@ -76,15 +83,18 @@ export default function UserFormTenant({ current, handleCancel }) {
 
   const child = (values, namespace) => (
     <>
-      <Grid item xs={12} sm={6}>
-        <FormikSelectField
-          label="Property"
-          formikKey={"property"}
-          itemArray={propertyData}
-          itemValue={(item) => item._id}
-          itemLabel={(item) => item.name}
-        />
-      </Grid>
+      {!initalProperty && (
+        <Grid item xs={12} sm={6}>
+          <FormikSelectField
+            label="Property"
+            formikKey={"property"}
+            itemArray={propertyData}
+            itemValue={(item) => item._id}
+            itemLabel={(item) => item.name}
+          />
+        </Grid>
+      )}
+
       <Grid item xs={12} sm={6}>
         <FormikSelectField
           disabled={values.property === ""}
@@ -106,7 +116,7 @@ export default function UserFormTenant({ current, handleCancel }) {
     <Grid item>
       <UserFormBase
         label="Tenant"
-        current={current}
+        current={current && current.user ? current.user : current}
         handleSubmit={handleSubmit}
         handleDelete={handleDelete}
         handleCancel={handleCancel}

@@ -112,13 +112,14 @@ exports.newMaintenance = asyncHandler(async (req, res) => {
 exports.editMaintenance = asyncHandler(async (req, res) => {
   const id = req.params.id;
 
-  const { tenant, property, issue, status, location, media } = JSON.parse(
+  const { tenant, property, title, body, status, location, media } = JSON.parse(
     req.body.data
   );
   const data = {
     tenant,
     property,
-    issue,
+    title,
+    body,
     status,
     location,
   };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import PropertyItem from "../../components/PropertyItem";
 import TenantItem from "../../components/TenantItem";
-import UserForm from "../../components/forms/UserForm";
+import UserFormExt from "../../components/forms/UserFormExt";
 import { Button } from "@mui/material";
 
 export default function Header({ currentTenant }) {
@@ -31,7 +31,7 @@ export default function Header({ currentTenant }) {
         </Grid>
       )}
       {editMode && (
-        <UserForm current={currentTenant} handleCancel={toggleEdit} />
+        <UserFormExt current={currentTenant} handleCancel={toggleEdit} />
       )}
     </React.Fragment>
   );

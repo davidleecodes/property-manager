@@ -10,7 +10,7 @@ import TenantAvatarCell from "../../components/TenantAvatarCell";
 import currencyformatter from "../../helpers/currencyFormatter";
 import LoadingView from "../../components/LoadingView";
 import dateFormatter from "./../../helpers/dateFormatter";
-import UserForm from "../../components/forms/UserForm";
+import UserFormExt from "../../components/forms/UserFormExt";
 import MaintenanceForm from "./../../components/forms/MaintenanceForm";
 import { useAuth } from "../../context/useAuthContext";
 import PropertyForm from "../../components/forms/PropertyForm";
@@ -301,7 +301,7 @@ export default function PropertyView({ propertyId }) {
             columns={tenantColumns}
             sortParams={tenantSortParams}
             toggleLabel="add"
-            toggleContent={<UserForm />}
+            toggleContent={<UserFormExt initalProperty={propertyData} />}
           ></TabTableView>
           <TabTableView
             label={"Maintenances"}
