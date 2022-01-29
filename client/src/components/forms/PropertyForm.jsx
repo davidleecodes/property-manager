@@ -75,6 +75,7 @@ export default function PropertyForm({ currentProperty, handleCancel }) {
       newProperty(values).then((data) => {
         const onSuccess = () => {
           history.push(`/properties/${data.success.property._id}`);
+          history.go();
         };
         submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
@@ -83,10 +84,14 @@ export default function PropertyForm({ currentProperty, handleCancel }) {
   function handleDelete() {
     deleteProperty(currentProperty._id).then((data) => {
       function onSuccess(data) {
+        // history.push({
+        //   pathname: `/properties`,
+        //   state: { properties: data.success.propertyList },
+        // });
         history.push({
           pathname: `/properties`,
-          state: { properties: data.success.propertyList },
         });
+        history.go();
       }
       submittedForm(
         updateSnackBarMessage,

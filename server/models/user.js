@@ -55,15 +55,23 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 userSchema.pre("save", async function (next) {
-  console.log("PRE", this.password);
-
   if (!this.isModified("password")) {
-    next();
+    return next();
   }
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  console.log("END", this.password);
+});
+
+userSchema.post(["findOneAndDelete", "remove"], async function (doc) {
+  console.log(doc);
+  if (doc) {
+    //todo: check if user is also admin before delete
+    const tenant = await Tenant.findOne({
+      user: doc._id,
+    });
+    tenant.remove();
+  }
 });
 
 module.exports = User = mongoose.model("user", userSchema, "user");

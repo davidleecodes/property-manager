@@ -11,6 +11,8 @@ const {
   loginUser,
   loadUser,
   logoutUser,
+  editUser,
+  deleteUser,
 } = require("../controllers/auth");
 
 // router
@@ -20,5 +22,7 @@ router.route("/register").post(protect, upload.single("file"), registerUser);
 router.route("/login").post(validateLogin, loginUser);
 router.route("/user").get(protect, loadUser);
 router.route("/logout").get(logoutUser);
+router.route("/edit/:id").patch(upload.single("file"), protect, editUser);
+router.route("/delete/:id").delete(protect, deleteUser);
 
 module.exports = router;

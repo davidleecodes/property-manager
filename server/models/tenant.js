@@ -32,12 +32,10 @@ const tenantSchema = new mongoose.Schema({
 });
 
 tenantSchema.post(["findOneAndDelete", "remove"], async function (doc) {
-  console.log(doc);
+  console.log("tenant", doc);
   if (doc) {
     //todo: check if user is also admin before delete
-    const user = await User.findOne({
-      _id: doc.user,
-    });
+
     const maintenances = await Maintenance.find({
       tenant: doc._id,
     });
@@ -47,22 +45,63 @@ tenantSchema.post(["findOneAndDelete", "remove"], async function (doc) {
     const leases = await Lease.find({
       tenant: doc._id,
     });
-    user.remove();
     maintenances.forEach((maintenance) => {
       maintenance.remove();
     });
-    console.log(user);
-
     invoices.forEach((invoice) => {
       invoice.remove();
     });
     leases.forEach((lease) => {
       lease.remove();
     });
-    console.log("here");
     console.log("Maintenance delete result: ", maintenances.length);
     console.log("Invoice delete result: ", invoices.length);
     console.log("Lease delete result: ", leases.length);
+
+    const unit = await Unit.findOne({ _id: doc.unit.toString() });
+
+    unit.tenants = unit.tenants.filter((t) => {
+      t.toString() !== doc._id;
+    });
+    unit.save();
+  }
+});
+
+tenantSchema.post(["save"], async function (doc) {
+  console.log("tenantSAVE", doc);
+  if (doc) {
+    //todo: check if user is also admin before delete
+
+    const unit = await Unit.find({ _id: doc.unit });
+    if (unit) {
+      unit.tenants = [...unit.tenants, doc._id];
+    }
+    unit.save();
+  }
+});
+
+tenantSchema.pre(["findOneAndUpdate"], async function (next) {
+  const doc = await this.model.findOne(this.getQuery());
+  const update = this._update;
+  console.log("tenantUpdate", doc);
+  if (doc) {
+    if (doc.unit.toString() === update.unit) {
+      return next();
+    }
+
+    const oldUnit = await Unit.findOne({ _id: doc.unit.toString() });
+    if (oldUnit) {
+      oldUnit.tenants = oldUnit.tenants.filter((t) => {
+        t.toString() !== doc._id;
+      });
+    }
+    oldUnit.save();
+
+    const newUnit = await Unit.findOne({ _id: update.unit });
+    if (newUnit) {
+      newUnit.tenants = [...newUnit.tenants, doc._id];
+    }
+    newUnit.save();
   }
 });
 

@@ -22,7 +22,6 @@ exports.getTenants = asyncHandler(async (req, res) => {
         path: "unit",
       });
 
-    console.log(tenantList);
     if (tenantList) {
       res.status(200).json(tenantList);
     } else {
@@ -64,68 +63,4 @@ exports.getTenantForId = asyncHandler(async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error });
   }
-});
-
-exports.newTenant = asyncHandler(async (req, res) => {
-  const {
-    first_name,
-    last_name,
-    image_url,
-    phone_number,
-    email,
-    account_type,
-    username,
-    password,
-    property,
-    unit,
-  } = req.body;
-
-  const user = await User.create({
-    first_name,
-    last_name,
-    image_url,
-    phone_number,
-    email,
-    account_type,
-    username,
-    password,
-  });
-
-  if (account_type === "tenant") {
-    const tenant = Tenant.create({ user: user._id, property, unit });
-  }
-
-  if (user) {
-    res.status(201).json({
-      success: { user },
-    });
-  } else {
-    res.status(404);
-    throw new Error("Invalid request data");
-  }
-});
-
-//@route Delete /tenant/delete/:id
-//delete property
-exports.deleteTenant = asyncHandler(async (req, res) => {
-  console.log("DELETE");
-  const tenantId = req.params.id;
-  const groupId = req.user.group;
-  let tenant;
-
-  if (tenantId) {
-    console.log(tenantId, groupId);
-    tenant = await Tenant.findOneAndDelete({
-      _id: tenantId,
-      group: groupId,
-    });
-  }
-  if (!tenant) {
-    res.status(404);
-    throw new Error("Invalid requests");
-  }
-
-  res.status(200).json({
-    success: { tenant },
-  });
 });

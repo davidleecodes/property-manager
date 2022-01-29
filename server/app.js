@@ -13,7 +13,6 @@ const tenantRouter = require("./routes/tenant");
 const maintenanceRouter = require("./routes/maintenance");
 const invoiceRouter = require("./routes/invoice");
 const leaseRouter = require("./routes/lease");
-const userRouter = require("./routes/user");
 
 const { json, urlencoded } = express;
 const cors = require("cors");
@@ -42,7 +41,6 @@ app.use("/tenant", tenantRouter);
 app.use("/maintenance", maintenanceRouter);
 app.use("/invoice", invoiceRouter);
 app.use("/lease", leaseRouter);
-app.use("/user", userRouter);
 
 app.get("/", (req, res) => {
   res.send("API is running");

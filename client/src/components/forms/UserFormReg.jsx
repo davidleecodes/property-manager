@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import {
-  newTenant,
-  editTenant,
-  deleteTenant,
-} from "../../helpers/APICalls/tenant";
+import { newUser, editUser, deleteUser } from "../../helpers/APICalls/auth";
 import { useHistory } from "react-router-dom";
 import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
@@ -29,14 +25,13 @@ export default function UserFormReg({
 
   function handleSubmit(values, { setSubmitting }) {
     if (current) {
-      console.log("UPDATE", current, values);
-      editTenant(current._id, current._id, values).then((data) => {
+      editUser(current._id, current._id, values).then((data) => {
         setSubmitting(true);
         const onSuccess = () => history.go(0);
         submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     } else {
-      newTenant(values).then((data) => {
+      newUser(values).then((data) => {
         const onSuccess = () => {
           history.push(`/dashboard`);
         };
@@ -46,10 +41,10 @@ export default function UserFormReg({
   }
 
   function handleDelete() {
-    deleteTenant(current._id).then((data) => {
+    deleteUser(current._id).then((data) => {
       function onSuccess() {
         history.push({
-          pathname: `/tenants`,
+          pathname: `/dashboard`,
         });
       }
       submittedForm(

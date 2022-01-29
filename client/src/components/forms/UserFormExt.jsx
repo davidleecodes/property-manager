@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import * as Yup from "yup";
-import {
-  newTenant,
-  editTenant,
-  deleteTenant,
-} from "../../helpers/APICalls/tenant";
+import { newUser, editUser, deleteUser } from "../../helpers/APICalls/auth";
 import { useHistory } from "react-router-dom";
 import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
@@ -36,8 +32,8 @@ export default function UserFormExt({ current, handleCancel, initalProperty }) {
   };
 
   if (current) {
-    initialValues.property = current.property._id;
-    initialValues.unit = current.unit._id;
+    initialValues.property = current.tenant.property._id;
+    initialValues.unit = current.tenant.unit._id;
   }
   if (initalProperty) {
     initialValues.property = initalProperty._id;
@@ -50,15 +46,16 @@ export default function UserFormExt({ current, handleCancel, initalProperty }) {
 
   function handleSubmit(values, { setSubmitting }) {
     if (current) {
-      editTenant(current.user._id, current._id, values).then((data) => {
+      editUser(current._id, current.tenant._id, values).then((data) => {
         setSubmitting(true);
         const onSuccess = () => history.go(0);
         submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     } else {
-      newTenant(values).then((data) => {
+      newUser(values).then((data) => {
         const onSuccess = () => {
           history.push(`/tenants/${data.success.tenant._id}`);
+          history.go();
         };
         submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
@@ -66,11 +63,12 @@ export default function UserFormExt({ current, handleCancel, initalProperty }) {
   }
 
   function handleDelete() {
-    deleteTenant(current._id).then((data) => {
+    deleteUser(current._id).then((data) => {
       function onSuccess() {
         history.push({
           pathname: `/tenants`,
         });
+        history.go();
       }
       submittedForm(
         updateSnackBarMessage,

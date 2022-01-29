@@ -8,8 +8,6 @@ const generateToken = require("../utils/generateToken");
 // @desc Register user
 // @access Public
 exports.registerUser = asyncHandler(async (req, res, next) => {
-  console.log("reg", req.body);
-
   const {
     first_name,
     last_name,
@@ -20,7 +18,6 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     property,
     unit,
   } = JSON.parse(req.body.data);
-  console.log(first_name);
 
   const emailExists = await User.findOne({ email });
 
@@ -31,10 +28,8 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
   let group;
   if (account_type === "owner") {
     group = await Group.create({});
-    console.log("GROUPCREATE", group);
   }
   let groupId = group ? group._id : req.user.group;
-  console.log("GROUPID", groupId);
 
   const user = await User.create({
     first_name,
@@ -46,16 +41,8 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     image_url: req.file ? req.file.path : null,
     group: groupId,
   });
-  console.log("ADD");
-
-  // if (req.file) {
-  //   user.image_url = req.file.path;
-  //   await user.save();
-  // }
-  // console.log("File", req.file);
 
   if (user) {
-    console.log("TEST");
     let tenant;
     if (account_type === "tenant") {
       tenant = await Tenant.create({
@@ -64,7 +51,6 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
         unit,
         group: groupId,
       });
-      console.log(tenant);
       tenant.populate("user");
     }
     if (account_type === "owner") {
@@ -102,14 +88,11 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 // @access Public
 exports.loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(req.body);
   const user = await User.findOne({ email });
-  console.log(user.account_type);
   if (user && (await user.matchPassword(password))) {
     const token = generateToken(user._id, user.group, user.account_type);
     const secondsInWeek = 604800;
 
-    console.log("tokenIN", token);
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: secondsInWeek * 1000,
@@ -141,7 +124,6 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 // @desc Get user data with valid token
 // @access Private
 exports.loadUser = asyncHandler(async (req, res, next) => {
-  console.log(req.user.id);
   const user = await User.findById(req.user._id);
 
   if (!user) {
@@ -177,4 +159,114 @@ exports.logoutUser = asyncHandler(async (req, res, next) => {
   });
 
   res.send("You have successfully logged out");
+});
+
+// @route GET /auth/edit/:id
+// @desc Logout user
+exports.editUser = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+
+  const {
+    first_name,
+    last_name,
+    phone_number,
+    email,
+    account_type,
+    password,
+    property,
+    unit,
+    image_url,
+    tenant_id,
+  } = JSON.parse(req.body.data);
+
+  const data = {
+    first_name,
+    last_name,
+    phone_number,
+    email,
+    account_type,
+    password,
+  };
+
+  // const user = await User.findByIdAndUpdate(id, data, { new: true });
+  const user = await User.findById(id);
+  user.first_name = first_name || user.first_name;
+  user.last_name = last_name || user.last_name;
+  user.phone_number = phone_number || user.phone_number;
+  user.email = email || user.email;
+  user.account_type = account_type || user.account_type;
+  user.property = property || user.property;
+  user.image_url = image_url || user.image_url;
+  user.password = password || user.password;
+  // if (first_name) user.first_name = first_name;
+  // if (last_name) user.last_name = last_name;
+  // if (phone_number) user.phone_number = phone_number;
+  // if (email) user.email = email;
+  // if (account_type) user.account_type = account_type;
+  // if (property) user.property = property;
+  // if (image_url) user.image_url = image_url;
+  // if (password) {
+  //   console.log("PASS");
+  //   user.password = password;
+  // }
+  // user.tenant_id = tenant_id || user.tenant_id;
+  // user.unit = unit || user.unit;
+
+  // await user.save();
+
+  if (req.file) {
+    if (user.image_url) removeImage(user.image_url, "propertyManager/user");
+    user.image_url = req.file.path;
+  } else if (user.image_url && !image_url) {
+    removeImage(user.image_url, "propertyManager/user");
+    user.image_url = null;
+  }
+
+  await user.save();
+
+  let tenant;
+  if (account_type === "tenant") {
+    tenant = await Tenant.findByIdAndUpdate(
+      tenant_id,
+      { property, unit },
+      { new: true }
+    );
+    tenant.populate("user");
+  }
+
+  if (tenant) {
+    res.status(201).json({
+      success: { tenant, user },
+    });
+  } else if (user) {
+    res.status(201).json({
+      success: { user },
+    });
+  } else {
+    res.status(404);
+    throw new Error("Invalid request data");
+  }
+});
+
+//@route Delete /auth/delete/:id
+//delete property
+exports.deleteUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const groupId = req.user.group;
+  let user;
+
+  if (userId) {
+    user = await User.findOneAndDelete({
+      _id: userId,
+      group: groupId,
+    });
+  }
+  if (!user) {
+    res.status(404);
+    throw new Error("Invalid requests");
+  }
+
+  res.status(200).json({
+    success: { user },
+  });
 });

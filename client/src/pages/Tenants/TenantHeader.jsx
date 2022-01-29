@@ -10,7 +10,12 @@ export default function Header({ currentTenant }) {
   function toggleEdit() {
     setEditMode(!editMode);
   }
-
+  function tenantToUser(tenant) {
+    const { user, ...rest } = tenant;
+    user.tenant = rest;
+    return user;
+  }
+  console.log(tenantToUser(currentTenant));
   return (
     <React.Fragment>
       {!editMode && (
@@ -31,7 +36,10 @@ export default function Header({ currentTenant }) {
         </Grid>
       )}
       {editMode && (
-        <UserFormExt current={currentTenant} handleCancel={toggleEdit} />
+        <UserFormExt
+          current={tenantToUser(currentTenant)}
+          handleCancel={toggleEdit}
+        />
       )}
     </React.Fragment>
   );

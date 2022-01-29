@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const maintenaceSchema = new mongoose.Schema({
+const maintenanceSchema = new mongoose.Schema({
   tenant: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "tenant",
@@ -39,6 +39,6 @@ const maintenaceSchema = new mongoose.Schema({
 
 module.exports = Maintenance = mongoose.model(
   "maintenance",
-  maintenaceSchema,
+  maintenanceSchema,
   "maintenance"
 );
