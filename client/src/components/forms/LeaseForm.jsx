@@ -4,28 +4,21 @@ import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import {
-  newMaintenance,
-  editMaintenance,
-  deleteMaintenance,
-} from "../../helpers/APICalls/maintenance";
+import { newLease, editLease, deleteLease } from "../../helpers/APICalls/lease";
 import { CircularProgress } from "@mui/material";
 import { useHistory, useLocation } from "react-router-dom";
 import FormikTextField from "./FormikTextField";
 import FormikSelectField from "./FormikSelectField";
 import { getTenants } from "../../helpers/APICalls/tenant";
-import FormikMultiImage from "./FormikMultiImage";
+import FormikDate from "./FormikDate";
+import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
 import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
 import { useAuth } from "../../context/useAuthContext";
 import acct from "../../helpers/accoutTypes";
 
-export default function MaintenanceForm({
-  currentMaintenance,
-  handleCancel,
-  tenantList,
-}) {
+export default function LeaseForm({ current, handleCancel, tenantList }) {
   const history = useHistory();
   const location = useLocation();
   const { loggedInUser } = useAuth();
@@ -35,20 +28,16 @@ export default function MaintenanceForm({
 
   const initialValues = {
     tenant: "",
-    title: "",
-    body: "",
-    status: "",
-    media: [],
-    location: "",
+    monthly_rent: "",
+    start_date: "",
+    end_date: "",
   };
 
-  if (currentMaintenance) {
-    initialValues.tenant = currentMaintenance.tenant._id;
-    initialValues.title = currentMaintenance.title;
-    initialValues.body = currentMaintenance.body;
-    initialValues.status = currentMaintenance.status;
-    initialValues.location = currentMaintenance.location;
-    initialValues.media = currentMaintenance.media;
+  if (current) {
+    initialValues.tenant = current.tenant._id;
+    initialValues.monthly_rent = current.monthly_rent;
+    initialValues.start_date = current.start_date;
+    initialValues.end_date = current.end_date;
   }
   if (isTenant) {
     initialValues.tenant = loggedInUser.tenant._id;
@@ -65,24 +54,17 @@ export default function MaintenanceForm({
       });
     }
   }, [isTenant, loggedInUser, tenantList]);
-  const statusTypes = [
-    { name: "open", label: "open" },
-    { name: "close", label: "close" },
-    { name: "pending", label: "pending" },
-  ];
 
   const validationSchema = Yup.object().shape({
     tenant: Yup.string().required("tenant is required"),
-    title: Yup.string().required("title is required"),
-    body: Yup.string().required("body is required"),
-    status: Yup.string().required("state is required"),
-    location: Yup.string().required("location is required"),
-    media: Yup.array().of(Yup.mixed()).min(1, "at least one image is required"),
+    monthly_rent: Yup.string().required("amount is required"),
+    start_date: Yup.date().required("start_date is required"),
+    end_date: Yup.date().required("end_date is required"),
   });
   function handleSubmit(values, { setSubmitting }) {
     console.log("hit");
-    if (currentMaintenance) {
-      editMaintenance(currentMaintenance._id, values).then((data) => {
+    if (current) {
+      editLease(current._id, values).then((data) => {
         const onSuccess = () => {
           history.go(0);
         };
@@ -92,10 +74,10 @@ export default function MaintenanceForm({
       values.property = tenantData.filter(
         (t) => t._id === values.tenant
       )[0].property;
-      newMaintenance(values).then((data) => {
+      newLease(values).then((data) => {
         const onSuccess = () => {
-          if (location.pathname.match(/maintenance/)) {
-            history.push(`/maintenances/${data.success.maintenance._id}`);
+          if (location.pathname.match(/lease/)) {
+            history.push(`/invoices/${data.success.lease._id}`);
             history.go();
           } else {
             history.go(0);
@@ -106,10 +88,10 @@ export default function MaintenanceForm({
     }
   }
   function handleDelete() {
-    deleteMaintenance(currentMaintenance._id).then((data) => {
+    deleteLease(current._id).then((data) => {
       function onSuccess(data) {
-        if (location.pathname.match(/maintenance/)) {
-          history.push(`/maintenances`);
+        if (location.pathname.match(/invoices/)) {
+          history.push(`/invoices`);
           history.go();
         } else {
           history.go(0);
@@ -144,20 +126,11 @@ export default function MaintenanceForm({
           }) => (
             <form onSubmit={handleSubmit} noValidate>
               <Typography component="h2" variant="h6" color="primary">
-                Maintenance
+                Lease
               </Typography>
 
               <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <FormikSelectField
-                    label="Status"
-                    formikKey="status"
-                    itemArray={statusTypes}
-                    itemValue={(item) => item.name}
-                    itemLabel={(item) => item.label}
-                  />
-                </Grid>
-                {!currentMaintenance && (
+                {!current && (
                   <>
                     {!isTenant && (
                       <Grid item xs={12} sm={6}>
@@ -172,52 +145,32 @@ export default function MaintenanceForm({
                         />
                       </Grid>
                     )}
-                    <Grid item xs={12} sm={6}>
-                      <FormikSelectField
-                        disabled={values.tenant === ""}
-                        label={
-                          values.tenant === ""
-                            ? "select tenant first"
-                            : "location"
-                        }
-                        formikKey="location"
-                        itemArray={[
-                          { _id: "common", name: "common" },
-                          values.tenant &&
-                            tenantData.length > 0 &&
-                            tenantData.filter((t) => t._id === values.tenant)[0]
-                              .unit,
-                        ]}
-                        itemValue={(item) => item._id}
-                        itemLabel={(item) => item.name}
-                      />
-                    </Grid>
                   </>
                 )}
                 <Grid item xs={12}>
                   <FormikTextField
-                    label="Title (short description)"
-                    formikKey="title"
+                    label="monthly_rent"
+                    formikKey="monthly_rent"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">$</InputAdornment>
+                      ),
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <FormikTextField
-                    label="Body( detailed description)"
-                    formikKey="body"
-                    multiline
-                    rows={4}
-                  />
-                </Grid>
+                  <FormikDate label="start_date" formikKey="start_date" />
+                </Grid>{" "}
                 <Grid item xs={12}>
-                  <FormikMultiImage label="Images" formikKey="media" />
+                  <FormikDate label="end_date" formikKey="end_date" />
                 </Grid>
-
+                {/*  */}
                 <Grid container item spacing={1} justifyContent="flex-end">
                   <Grid item>
                     <Button type="submit" variant="contained" color="primary">
                       {isSubmitting ? (
                         <CircularProgress style={{ color: "white" }} />
-                      ) : currentMaintenance ? (
+                      ) : current ? (
                         "Update"
                       ) : (
                         "Create"
@@ -225,7 +178,7 @@ export default function MaintenanceForm({
                     </Button>
                   </Grid>
 
-                  {currentMaintenance && (
+                  {current && (
                     <Grid item>
                       <Button onClick={handleDelete} variant="outlined">
                         Delete

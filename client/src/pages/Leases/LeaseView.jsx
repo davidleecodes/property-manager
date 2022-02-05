@@ -6,16 +6,20 @@ import currencyformatter from "../../helpers/currencyFormatter";
 import LoadingView from "../../components/LoadingView";
 import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
+import LeaseForm from "../../components/forms/LeaseForm";
 
 export default function LeaseView({ leaseId }) {
   const [leaseData, setLeaseData] = useState();
+  const isAdd = leaseId === "add";
+
   useEffect(() => {
-    if (leaseId) {
+    setLeaseData(null);
+    if (!isAdd && leaseId) {
       getLeaseForId(leaseId).then((res) => {
         setLeaseData(res);
       });
     }
-  }, [leaseId]);
+  }, [leaseId, isAdd]);
   const leaseColumns = [
     {
       label: "monthly rent",
@@ -32,6 +36,17 @@ export default function LeaseView({ leaseId }) {
       content: (lease) => <span>{dateFormatter(lease.end_date)}</span>,
     },
   ];
+
+  if (isAdd) {
+    return (
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <LeaseForm />
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
     <LoadingView
       data={leaseData}
@@ -46,6 +61,8 @@ export default function LeaseView({ leaseId }) {
               label={"Lease"}
               data={[leaseData]}
               columns={leaseColumns}
+              toggleLabel="edit"
+              toggleContent={<LeaseForm current={leaseData} />}
             />
           </Grid>
         </Grid>

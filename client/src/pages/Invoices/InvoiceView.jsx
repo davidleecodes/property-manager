@@ -6,16 +6,21 @@ import currencyformatter from "../../helpers/currencyFormatter";
 import LoadingView from "../../components/LoadingView";
 import SingleTableView from "../../components/SingleTableView";
 import dateFormatter from "./../../helpers/dateFormatter";
+import InvoiceForm from "../../components/forms/InvoiceForm";
 
 export default function InvoiceView({ invoiceId }) {
   const [invoiceData, setInvoiceData] = useState();
+  const isAdd = invoiceId === "add";
+
   useEffect(() => {
-    if (invoiceId) {
+    setInvoiceData(null);
+
+    if (!isAdd && invoiceId) {
       getInvoiceForId(invoiceId).then((res) => {
         setInvoiceData(res);
       });
     }
-  }, [invoiceId]);
+  }, [invoiceId, isAdd]);
   const invoiceColumns = [
     {
       label: "amount",
@@ -32,6 +37,17 @@ export default function InvoiceView({ invoiceId }) {
       content: (invoice) => <span>{dateFormatter(invoice.paid_date)}</span>,
     },
   ];
+
+  if (isAdd) {
+    return (
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <InvoiceForm />
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
     <LoadingView
       data={invoiceData}
@@ -46,6 +62,8 @@ export default function InvoiceView({ invoiceId }) {
               label={"Invoice"}
               data={[invoiceData]}
               columns={invoiceColumns}
+              toggleLabel="edit"
+              toggleContent={<InvoiceForm current={invoiceData} />}
             />
           </Grid>
         </Grid>

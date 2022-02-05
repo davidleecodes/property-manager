@@ -9,6 +9,7 @@ import FormikTextField from "./FormikTextField";
 import FormikImage from "./FormikImage";
 import Paper from "@mui/material/Paper";
 import { DefaultUserImage } from "../../images/images";
+import { theme } from "../../themes/theme";
 
 export default function UserFormBase({
   label,
@@ -128,7 +129,13 @@ export default function UserFormBase({
                         <Grid item>
                           <Button onClick={handleDelete} variant="outlined">
                             {deleteSubmitting ? (
-                              <CircularProgress style={{ color: "white" }} />
+                              <CircularProgress
+                                size={theme.typography.h5.fontSize}
+                                test={console.log(theme)}
+                                style={{
+                                  color: theme.palette.secondary.main,
+                                }}
+                              />
                             ) : (
                               "Delete"
                             )}

@@ -57,6 +57,7 @@ export default function LeaseSideNav({ selectedId, data }) {
       sortParams={sortParams}
       searchParms={searchParms}
       collapsedText={collapsedText}
+      isAdd={true}
     />
   );
 }
