@@ -1,38 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
-import TenantHeader from "./TenantHeader";
-import { getTenantForId } from "../../helpers/APICalls/tenant";
+import UserHeader from "./UserHeader";
+import { getUserForId } from "../../helpers/APICalls/user";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
 import currencyformatter from "../../helpers/currencyFormatter";
 import LoadingView from "../../components/LoadingView";
 import SingleTableView from "../../components/SingleTableView";
-import dateFormatter from "./../../helpers/dateFormatter";
+import dateFormatter from "../../helpers/dateFormatter";
 import MaintenanceForm from "../../components/forms/MaintenanceForm";
 import { useAuth } from "../../context/useAuthContext";
 import UserFormExt from "../../components/forms/UserFormExt";
 import CssBaseline from "@mui/material/CssBaseline";
 
-export default function TenantView({ tenantId }) {
+export default function UserView({ userId }) {
   const { loggedInUser } = useAuth();
-  const isAdd = tenantId === "add";
+  const isAdd = userId === "add";
 
   const [maintenanceData, setMaintenanceData] = useState([]);
   const [invoiceData, setInvoiceData] = useState([]);
   const [leaseData, setLeaseData] = useState([]);
-  const [tenantData, setTenantData] = useState();
+  const [userData, setUserData] = useState();
 
   useEffect(() => {
-    setTenantData(null);
-    if (!isAdd && tenantId) {
-      getTenantForId(tenantId).then((res) => {
-        setTenantData(res);
-        setMaintenanceData(res.maintenances);
-        setInvoiceData(res.invoices);
-        setLeaseData(res.leases);
+    setUserData(null);
+    if (!isAdd && userId) {
+      getUserForId(userId).then((res) => {
+        setUserData(res);
+        console.log(res);
+        // setMaintenanceData(res.maintenances);
+        // setInvoiceData(res.invoices);
+        // setLeaseData(res.leases);
       });
     }
-  }, [tenantId, isAdd]);
+  }, [userId, isAdd]);
 
   const maintenanceColumns = [
     {
@@ -48,13 +49,13 @@ export default function TenantView({ tenantId }) {
       label: "Location",
       content: (maintenance) => (
         <span>
-          {maintenance.location === "common" ? "common" : tenantData.unit.name}
+          {maintenance.location === "common" ? "common" : userData.unit.name}
         </span>
       ),
     },
     {
       label: "Status",
-      content: (tenant) => <span>{tenant.status}</span>,
+      content: (user) => <span>{user.status}</span>,
     },
 
     {
@@ -144,14 +145,14 @@ export default function TenantView({ tenantId }) {
       <CssBaseline />
 
       <LoadingView
-        data={tenantData}
+        data={userData}
         loadingState={(data) => !data}
         notFoundState={(data) => data.message}
       >
-        {tenantData && (
+        {userData && (
           <Grid container spacing={3}>
-            <TenantHeader currentTenant={tenantData} />
-
+            <UserHeader currentUser={userData} />
+            {/* 
             <Grid item xs={12}>
               <SingleTableView
                 label={"Maintenance"}
@@ -174,7 +175,7 @@ export default function TenantView({ tenantId }) {
                 data={leaseData}
                 columns={leaseColumns}
               />
-            </Grid>
+            </Grid> */}
           </Grid>
         )}
       </LoadingView>

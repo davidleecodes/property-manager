@@ -4,6 +4,9 @@ import Input from "@mui/material/Input";
 import { useField } from "formik";
 import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
+import ImageOrSvg from "../ImageOrSvg";
+import { Box } from "@mui/system";
+
 export default function FormikImage({
   label,
   formikKey,
@@ -45,7 +48,18 @@ export default function FormikImage({
       )}
       {avatar && (
         <Grid item>
-          <Avatar
+          <ImageOrSvg
+            Image={
+              field.value instanceof File
+                ? URL.createObjectURL(field.value)
+                : field.value
+                ? field.value
+                : defaultImage
+            }
+            width={200}
+            height={200}
+          />
+          {/* <Avatar
             src={
               field.value instanceof File
                 ? URL.createObjectURL(field.value)
@@ -54,7 +68,7 @@ export default function FormikImage({
                 : defaultImage
             }
             sx={{ width: 200, height: 200 }}
-          />
+          /> */}
         </Grid>
       )}
       <Grid item>

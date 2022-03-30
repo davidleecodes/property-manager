@@ -54,7 +54,7 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
       tenant.populate("user");
     }
     if (account_type === "owner") {
-      const token = generateToken(user._id, groupId, user.account_type);
+      const token = generateToken(user._id, groupId, user.admin_type, "staff");
       const secondsInWeek = 604800;
       res.cookie("token", token, {
         httpOnly: true,
@@ -63,6 +63,7 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
         secure: process.env.NODE_ENV === "development" ? false : true,
       });
     }
+    user.set("login_type", loginType, { strict: false });
 
     if (tenant) {
       user.set("tenant", tenant, { strict: false });
@@ -87,10 +88,17 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 // @desc Login user
 // @access Public
 exports.loginUser = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
+  console.log(req.body);
+  const { email, password, loginType } = req.body;
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
-    const token = generateToken(user._id, user.group, user.account_type);
+    const token = generateToken(
+      user._id,
+      user.group,
+      user.admin_type,
+      loginType
+    );
+    console.log(loginType, token);
     const secondsInWeek = 604800;
 
     res.cookie("token", token, {
@@ -99,8 +107,9 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
       sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
       secure: process.env.NODE_ENV === "development" ? false : true,
     });
-
-    if (user.account_type === "tenant") {
+    user.set("login_type", loginType, { strict: false });
+    // if (user.account_type === "tenant") {
+    if (loginType === "tenant" && user.is_Tenant) {
       const tenant = await Tenant.findOne({ user: user._id }).populate({
         path: "unit",
       });
@@ -125,7 +134,7 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 // @access Private
 exports.loadUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user._id);
-
+  console.log(req);
   if (!user) {
     res.status(401);
     throw new Error("Not authorized");

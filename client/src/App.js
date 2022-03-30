@@ -5,6 +5,7 @@ import NavBar from "./components/NavBar";
 import Properties from "./pages/Properties/Properties";
 import Dashboard from "./pages/Dashboard";
 import Tenants from "./pages/Tenants/Tenants";
+import Users from "./pages/Users/Users";
 import Maintenances from "./pages/Maintenances/Maintenances";
 import Invoices from "./pages/Invoices/Invoices";
 import Login from "./pages/Login/Login";
@@ -16,7 +17,7 @@ import RedirectLoggedInRoute from "./components/RedirectLoggedInRoute";
 import Unauthorized from "./pages/Unauthorized";
 import Signup from "./pages/Signup/Signup";
 import Profile from "./pages/Profile/Profile";
-import acct from "./helpers/accoutTypes";
+import acct from "./helpers/accountTypes";
 
 function App() {
   return (
@@ -51,6 +52,20 @@ function App() {
                 exact
                 path="/tenants"
                 Comp={Tenants}
+                allow={[acct.owner]}
+              />
+
+              <ProtectedRoute
+                exact
+                path="/users/:id"
+                Comp={Users}
+                allow={[acct.owner]}
+              />
+
+              <ProtectedRoute
+                exact
+                path="/users/"
+                Comp={Users}
                 allow={[acct.owner]}
               />
 

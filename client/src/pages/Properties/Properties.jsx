@@ -4,6 +4,7 @@ import { getProperties } from "../../helpers/APICalls/property";
 import PropertyView from "./PropertyView";
 import PgSideAndView from "../../components/PgSideAndView";
 import PropertiesSideNav from "./PropertiesSideNav";
+import CssBaseline from "@mui/material/CssBaseline";
 
 export default function Properties() {
   const { id } = useParams();
@@ -32,9 +33,12 @@ export default function Properties() {
   }, [history, propertiesData, setCurrentPropertyId, id]);
 
   return (
-    <PgSideAndView
-      side={<PropertiesSideNav selectedId={id} data={propertiesData} />}
-      view={<PropertyView propertyId={currentPropertyId} />}
-    />
+    <>
+      <CssBaseline />
+      <PgSideAndView
+        side={<PropertiesSideNav selectedId={id} data={propertiesData} />}
+        view={<PropertyView propertyId={currentPropertyId} />}
+      />
+    </>
   );
 }

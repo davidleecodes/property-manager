@@ -4,6 +4,7 @@ import { getTenants } from "../../helpers/APICalls/tenant";
 import TenantView from "./TenantView";
 import PgSideAndView from "../../components/PgSideAndView";
 import TenantSideNav from "./TenantsSideNav";
+import CssBaseline from "@mui/material/CssBaseline";
 
 export default function Tenants() {
   let { id } = useParams();
@@ -28,9 +29,13 @@ export default function Tenants() {
   }, [history, tenantData, setCurrentTenantId, id]);
 
   return (
-    <PgSideAndView
-      side={<TenantSideNav selectedId={id} data={tenantData} />}
-      view={<TenantView tenantId={currentTenantId} />}
-    />
+    <>
+      <CssBaseline />
+
+      <PgSideAndView
+        side={<TenantSideNav selectedId={id} data={tenantData} />}
+        view={<TenantView tenantId={currentTenantId} />}
+      />
+    </>
   );
 }

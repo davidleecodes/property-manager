@@ -4,10 +4,13 @@ import Link from "@mui/material/Link";
 import { Link as RouterLink } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
 
 export default function Unauthorized() {
   return (
     <Grid container component="main" alignItems="center" direction="column">
+      <CssBaseline />
+
       <Box mt={5} />
       <Typography variant="h3" color="inherit" noWrap>
         Unauthorized

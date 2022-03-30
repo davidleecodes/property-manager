@@ -20,7 +20,7 @@ import Paper from "@mui/material/Paper";
 import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
 import { useAuth } from "../../context/useAuthContext";
-import acct from "../../helpers/accoutTypes";
+import acct from "../../helpers/accountTypes";
 
 export default function InvoiceForm({ current, handleCancel, tenantList }) {
   const history = useHistory();

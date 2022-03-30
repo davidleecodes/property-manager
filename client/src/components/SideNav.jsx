@@ -18,6 +18,8 @@ import { Grid } from "@mui/material";
 import { theme } from "./../themes/theme";
 import { alpha } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import Paper from "@mui/material/Paper";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const linkStyle = {
   "&.selected": {
@@ -83,7 +85,7 @@ function Panel({
               selectedSort === param.label
                 ? {
                     mr: 0.2,
-                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                    backgroundColor: alpha(theme.palette.primary.main, 0.2),
                   }
                 : { mr: 0.2 }
             }
@@ -198,6 +200,8 @@ export default function SideNav({
 
   return (
     <React.Fragment>
+      <CssBaseline />
+
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Accordion
           expanded={expanded === "panel1"}
@@ -233,21 +237,24 @@ export default function SideNav({
           </AccordionDetails>
         </Accordion>
       </Box>
-      <Box sx={{ display: { xs: "none", md: "block" } }}>
-        <Panel
-          handleChange={() => {}}
-          selectedId={selectedId}
-          data={sortedData}
-          path={path}
-          itemContent={itemContent}
-          onSort={handleSort}
-          onSearch={handleSearch}
-          onClear={handleClearSearch}
-          sortParams={sortParams}
-          selectedSort={selectedSort}
-          isAdd={isAdd}
-        />
-      </Box>
+      <Grid sx={{ display: { xs: "none", md: "flex" } }}>
+        <Grid sx={{ mr: 3 }}>
+          <Panel
+            handleChange={() => {}}
+            selectedId={selectedId}
+            data={sortedData}
+            path={path}
+            itemContent={itemContent}
+            onSort={handleSort}
+            onSearch={handleSearch}
+            onClear={handleClearSearch}
+            sortParams={sortParams}
+            selectedSort={selectedSort}
+            isAdd={isAdd}
+          />
+        </Grid>
+        <Divider orientation="vertical" variant="middle" flexItem />
+      </Grid>
     </React.Fragment>
   );
 }

@@ -6,8 +6,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useAuth } from "../context/useAuthContext";
-import acct from "../helpers/accoutTypes";
+import acct from "../helpers/accountTypes";
 import { theme } from "./../themes/theme";
+import CssBaseline from "@mui/material/CssBaseline";
+import loginType from "./../helpers/loginTypes";
 
 const linkStyle = {
   my: 1,
@@ -18,10 +20,25 @@ const linkStyle = {
 };
 export default function Nav() {
   const { loggedInUser, logout } = useAuth();
-
+  console.log(loggedInUser);
   let linkPaths;
 
-  if (loggedInUser && loggedInUser.account_type === acct.owner) {
+  if (
+    loggedInUser &&
+    loggedInUser.is_tenant &&
+    loggedInUser.login_type === loginType.tenant
+  ) {
+    linkPaths = [
+      { label: "Dashboard", path: "/dashboard" },
+      { label: "Maintenances", path: "/maintenances" },
+      { label: "Invoices", path: "/invoices" },
+      { label: "Leases", path: "/leases" },
+    ];
+  } else if (
+    loggedInUser &&
+    loggedInUser.login_type === loginType.staff &&
+    loggedInUser.admin_type === acct.owner
+  ) {
     linkPaths = [
       { label: "Dashboard", path: "/dashboard" },
       { label: "Properties", path: "/properties" },
@@ -29,67 +46,92 @@ export default function Nav() {
       { label: "Maintenances", path: "/maintenances" },
       { label: "Invoices", path: "/invoices" },
       { label: "Leases", path: "/leases" },
+      { label: "Users", path: "/users" },
     ];
-  } else {
+  } else if (
+    loggedInUser &&
+    loggedInUser.login_type === loginType.staff &&
+    loggedInUser.admin_type === acct.super
+  ) {
     linkPaths = [
       { label: "Dashboard", path: "/dashboard" },
+      { label: "Properties", path: "/properties" },
+      { label: "Tenants", path: "/tenants" },
       { label: "Maintenances", path: "/maintenances" },
-      { label: "Invoices", path: "/invoices" },
-      { label: "Leases", path: "/leases" },
     ];
+  } else {
+    linkPaths = [{ label: "Dashboard", path: "/dashboard" }];
   }
   return (
-    <AppBar
-      position="static"
-      color="default"
-      elevation={0}
-      sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
-    >
-      <Toolbar sx={{ flexWrap: "wrap" }}>
-        <Typography variant="h4" color="secondary" noWrap sx={{ flexGrow: 1 }}>
-          tuk•den
-        </Typography>
+    <>
+      <CssBaseline />
 
-        <nav>
-          {linkPaths.map((lp) => (
-            <Link
-              key={lp.label}
-              component={RouterLink}
-              variant="button"
-              color="textPrimary"
-              to={lp.path}
-              activeClassName="selected"
-              sx={linkStyle}
-            >
-              {lp.label}
-            </Link>
-          ))}
-        </nav>
-        {loggedInUser && (
-          <>
-            <Link component={RouterLink} to="/profile" underline="none">
-              {`${loggedInUser.first_name} ${loggedInUser.last_name}`}
-            </Link>
+      <AppBar
+        position="static"
+        // color="primary"
+        elevation={0}
+        enableColorOnDark
+        // sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+      >
+        <Toolbar sx={{ flexWrap: "wrap" }}>
+          <Typography
+            variant="h4"
+            // color="secondary"
+            noWrap
+            sx={{ flexGrow: 1 }}
+          >
+            tuk•den
+          </Typography>
+
+          <nav>
+            {linkPaths.map((lp) => (
+              <Link
+                key={lp.label}
+                component={RouterLink}
+                variant="button"
+                // color="textPrimary"
+                color={theme.palette.primary.contrastText}
+                to={lp.path}
+                activeClassName="selected"
+                sx={linkStyle}
+              >
+                {lp.label}
+              </Link>
+            ))}
+          </nav>
+          {loggedInUser && (
+            <>
+              <Link
+                component={RouterLink}
+                to="/profile"
+                underline="none"
+                color={theme.palette.primary.contrastText}
+              >
+                {`${loggedInUser.first_name} ${loggedInUser.last_name}`}
+              </Link>
+              <Button
+                onClick={() => logout()}
+                variant="outlined"
+                sx={{ my: 1, mx: 1.5 }}
+                color="secondary"
+              >
+                Logout
+              </Button>
+            </>
+          )}
+          {!loggedInUser && (
             <Button
-              onClick={() => logout()}
+              component={RouterLink}
+              to={"/login"}
               variant="outlined"
               sx={{ my: 1, mx: 1.5 }}
+              color="secondary"
             >
-              Logout
+              Login
             </Button>
-          </>
-        )}
-        {!loggedInUser && (
-          <Button
-            component={RouterLink}
-            to={"/login"}
-            variant="outlined"
-            sx={{ my: 1, mx: 1.5 }}
-          >
-            Login
-          </Button>
-        )}
-      </Toolbar>
-    </AppBar>
+          )}
+        </Toolbar>
+      </AppBar>
+    </>
   );
 }

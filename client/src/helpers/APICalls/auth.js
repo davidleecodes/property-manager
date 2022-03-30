@@ -1,10 +1,10 @@
 import serverPath from "./server";
 
-export async function login(email, password) {
+export async function login(email, password, loginType) {
   const fetchOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, loginType }),
     credentials: "include",
   };
   return await fetch(`${serverPath}/auth/login`, fetchOptions)

@@ -5,6 +5,7 @@ import { getPropertyForId } from "../../helpers/APICalls/property";
 import TabTableView from "../../components/TabTableView";
 import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
+import Box from "@mui/material/Box";
 import moment from "moment";
 import TenantAvatarCell from "../../components/TenantAvatarCell";
 import currencyformatter from "../../helpers/currencyFormatter";

@@ -15,15 +15,15 @@ export default function PgSideAndView({ side, view }) {
         </Grid>
 
         <Grid item xs={12} md={9}>
-          <Paper
+          {/* <Paper
             sx={{
               p: 2,
               display: "flex",
               flexDirection: "column",
             }}
-          >
-            {view}
-          </Paper>
+          > */}
+          {view}
+          {/* </Paper> */}
         </Grid>
       </Grid>
     </Container>

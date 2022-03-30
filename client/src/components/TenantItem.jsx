@@ -6,7 +6,7 @@ import { Link as RouterLink } from "react-router-dom";
 import Link from "@mui/material/Link";
 import { DefaultUserImage } from "../images/images";
 import { useAuth } from "../context/useAuthContext";
-import acct from "../helpers/accoutTypes";
+import acct from "../helpers/accountTypes";
 
 export default function TenantItem({ tenant }) {
   const { loggedInUser } = useAuth();

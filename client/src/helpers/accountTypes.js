@@ -1,8 +1,9 @@
 const acct = {
+  none: "none",
   owner: "owner",
-  tenant: "tenant",
-  maintenance: "maintenance",
   admin: "admin",
+  super: "super",
+  tenant: "tenant",
 };
 
 export default acct;

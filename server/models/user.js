@@ -28,6 +28,14 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
 
+  is_tenant: {
+    type: Boolean,
+  },
+
+  admin_type: {
+    type: String,
+  },
+
   password: {
     type: String,
     required: true,

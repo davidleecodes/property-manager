@@ -9,21 +9,36 @@ export const theme = createTheme({
       fontWeight: 700,
     },
   },
+  // palette: {
+  //   // primary: { main: "#f04826" }, //pink
+  //   primary: {
+  //     main: "#0a2d26",
+  //     light: "#34564e",
+  //     dark: "#000400",
+  //     contrastText: "#fff",
+  //   }, //green
+  //   secondary: {
+  //     main: "#db9769",
+  //     light: "#ffc898",
+  //     dark: "#a7693d",
+  //     contrastText: "#000",
+  //   }, //tan
+  // },
+
   palette: {
-    // primary: { main: "#f04826" }, //pink
+    mode: "dark",
     primary: {
-      main: "#0a2d26",
-      light: "#34564e",
-      dark: "#000400",
-      contrastText: "#fff",
-    }, //green
+      main: "#f7d5ac",
+    },
     secondary: {
-      main: "#db9769",
-      light: "#ffc898",
-      dark: "#a7693d",
-      contrastText: "#000",
-    }, //tan
+      main: "#e66c4c",
+    },
+    background: {
+      default: "#113d3d",
+      paper: "#546d6c",
+    },
   },
+
   shape: {
     borderRadius: 3,
   },

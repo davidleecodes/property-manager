@@ -17,7 +17,8 @@ const tableCellStyle = {
   },
   borderBottom: {
     xs: "none",
-    md: "1px solid rgba(224, 224, 224, 1)",
+    // md: `1px solid rgba(224, 224, 224, 1)`,
+    md: `1px solid ${alpha(theme.palette.background.default, 0.6)} `,
   },
 };
 const before = {
@@ -76,7 +77,7 @@ export default function TableView({ data, columns, sortParams }) {
                 selectedSort.label === param.label
                   ? {
                       mr: 0.2,
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                      backgroundColor: alpha(theme.palette.primary.main, 0.2),
                     }
                   : { mr: 0.2 }
               }
