@@ -8,7 +8,7 @@ const { removeImage } = require("../utils/cloudinary");
 exports.getMaintenances = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const groupId = req.user.group;
-  const acctType = req.user.account_type;
+  const acctType = req.user.loggedin_acct;
 
   try {
     let query = {
@@ -43,7 +43,7 @@ exports.getMaintenanceForId = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const userId = req.user._id;
   const groupId = req.user.group;
-  const acctType = req.user.account_type;
+  const acctType = req.user.loggedin_acct;
   try {
     let query = {
       _id: id,

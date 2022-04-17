@@ -21,7 +21,9 @@ export default function ProtectedRoute({ Comp, allow, ...rest }) {
         } else {
           if (
             (loggedInUser && !allow) ||
-            (loggedInUser && allow && allow.includes(loggedInUser.account_type))
+            (loggedInUser &&
+              allow &&
+              allow.includes(loggedInUser.loggedin_acct))
           ) {
             return <Comp {...rest} {...props} />;
           } else {

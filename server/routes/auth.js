@@ -18,7 +18,7 @@ const {
 // router
 //   .route("/register")
 //   .post(validateRegister, protect, upload.single("file"), registerUser);
-router.route("/register").post(protect, upload.single("file"), registerUser);
+router.route("/register").post(upload.single("file"), registerUser);
 router.route("/login").post(validateLogin, loginUser);
 router.route("/user").get(protect, loadUser);
 router.route("/logout").get(logoutUser);

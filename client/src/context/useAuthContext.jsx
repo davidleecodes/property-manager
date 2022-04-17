@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
   const [loggedInUser, setLoggedInUser] = useState();
   const history = useHistory();
   const updateLoginContext = useCallback((data) => {
+    console.log(data.user);
     setLoggedInUser(data.user);
   }, []);
 

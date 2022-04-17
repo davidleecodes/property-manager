@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
 import UserFormBase from "./UserFormBase";
+import * as Yup from "yup";
+import FormikSwitch from "./FormikSwitch";
 
 export default function UserFormReg({
   current,
@@ -21,8 +23,13 @@ export default function UserFormReg({
     ...initValues,
   };
 
+  if (!current) {
+    initialValues.is_owner = false;
+  }
   const validationSchema = {};
-
+  if (!current) {
+    validationSchema.is_owner = Yup.boolean().oneOf([true], "have to be owner");
+  }
   function handleSubmit(values, { setSubmitting }) {
     if (current) {
       editUser(current._id, current._id, values).then((data) => {
@@ -31,7 +38,9 @@ export default function UserFormReg({
         submittedForm(updateSnackBarMessage, setSubmitting, data, onSuccess);
       });
     } else {
-      newUser(values).then((data) => {
+      let newValues = { ...values };
+      if (newValues.is_owner) newValues.admin_type = "owner";
+      newUser(newValues).then((data) => {
         const onSuccess = () => {
           history.push(`/dashboard`);
         };
@@ -62,7 +71,13 @@ export default function UserFormReg({
       history.go(-1);
     }
   }
-  const child = (values, namespace) => <></>;
+  const child = (values, namespace) => (
+    <>
+      {!current && (
+        <FormikSwitch label="is Owner" formikKey={"is_owner"}></FormikSwitch>
+      )}
+    </>
+  );
 
   return (
     <Grid item>

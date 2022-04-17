@@ -24,9 +24,9 @@ const userSchema = new mongoose.Schema({
     // unique: true,
   },
 
-  account_type: {
-    type: String,
-  },
+  // account_type: {
+  //   type: String,
+  // },
 
   is_tenant: {
     type: Boolean,

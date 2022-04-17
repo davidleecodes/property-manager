@@ -24,7 +24,7 @@ export default function LeaseForm({ current, handleCancel, tenantList }) {
   const { loggedInUser } = useAuth();
   const { updateSnackBarMessage } = useSnackBar();
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
-  const isTenant = loggedInUser.account_type === acct.tenant;
+  const isTenant = loggedInUser.loggedin_acct === acct.tenant;
 
   const initialValues = {
     tenant: "",

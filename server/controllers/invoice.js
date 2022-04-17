@@ -7,17 +7,18 @@ const decodeToken = require("../utils/decodeToken");
 exports.getInvoices = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const groupId = req.user.group;
-  const acctType = req.user.account_type;
+  const loggedin_acct = req.user.loggedin_acct;
 
-  console.log(userId, groupId, acctType);
+  console.log(userId, groupId, loggedin_acct);
   try {
     let query = {
       group: groupId,
     };
-    if (acctType === "tenant") {
+    if (loggedin_acct === "tenant") {
       const tenant = await Tenant.findOne({ user: userId });
       query.tenant = tenant._id;
     }
+    console.log(query);
 
     const InvoiceList = await Invoice.find(query)
       .populate({
@@ -43,14 +44,14 @@ exports.getInvoiceForId = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const userId = req.user._id;
   const groupId = req.user.group;
-  const acctType = req.user.account_type;
+  const loggedin_acct = req.user.loggedin_acct;
 
   try {
     let query = {
       _id: id,
       group: groupId,
     };
-    if (acctType === "tenant") {
+    if (loggedin_acct === "tenant") {
       const tenant = await Tenant.findOne({ user: userId });
       query.tenant = tenant._id;
     }

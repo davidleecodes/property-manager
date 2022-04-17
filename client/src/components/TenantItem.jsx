@@ -20,7 +20,7 @@ export default function TenantItem({ tenant }) {
         <Link
           underline="none"
           component={
-            loggedInUser.account_type === acct.tenant ? Link : RouterLink
+            loggedInUser.loggedin_acct === acct.tenant ? Link : RouterLink
           }
           to={`/tenants/${tenant._id}`}
         >

@@ -25,7 +25,7 @@ export default function PropertyItem({ property }) {
         <Link
           underline="none"
           component={
-            loggedInUser.account_type === acct.tenant ? Link : RouterLink
+            loggedInUser.loggedin_acct === acct.tenant ? Link : RouterLink
           }
           to={`/properties/${property._id}`}
         >

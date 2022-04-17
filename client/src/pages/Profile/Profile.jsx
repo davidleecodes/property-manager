@@ -15,7 +15,7 @@ export default function Profile() {
       <Grid container direction="column" sx={{ mt: 2 }} spacing={2}>
         <UserFormReg
           current={loggedInUser}
-          label={loggedInUser.account_type}
+          label={loggedInUser.loggedin_acct}
           isHideDelete={true}
         />
       </Grid>

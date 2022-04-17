@@ -23,22 +23,14 @@ export default function Nav() {
   console.log(loggedInUser);
   let linkPaths;
 
-  if (
-    loggedInUser &&
-    loggedInUser.is_tenant &&
-    loggedInUser.login_type === loginType.tenant
-  ) {
+  if (loggedInUser && loggedInUser.loggedin_acct === acct.tenant) {
     linkPaths = [
       { label: "Dashboard", path: "/dashboard" },
       { label: "Maintenances", path: "/maintenances" },
       { label: "Invoices", path: "/invoices" },
       { label: "Leases", path: "/leases" },
     ];
-  } else if (
-    loggedInUser &&
-    loggedInUser.login_type === loginType.staff &&
-    loggedInUser.admin_type === acct.owner
-  ) {
+  } else if (loggedInUser && loggedInUser.loggedin_acct === acct.owner) {
     linkPaths = [
       { label: "Dashboard", path: "/dashboard" },
       { label: "Properties", path: "/properties" },
@@ -48,11 +40,7 @@ export default function Nav() {
       { label: "Leases", path: "/leases" },
       { label: "Users", path: "/users" },
     ];
-  } else if (
-    loggedInUser &&
-    loggedInUser.login_type === loginType.staff &&
-    loggedInUser.admin_type === acct.super
-  ) {
+  } else if (loggedInUser && loggedInUser.loggedin_acct === acct.super) {
     linkPaths = [
       { label: "Dashboard", path: "/dashboard" },
       { label: "Properties", path: "/properties" },

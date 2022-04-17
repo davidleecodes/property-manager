@@ -2,7 +2,6 @@ const User = require("../models/user");
 const Group = require("../models/group");
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
-// const Profile = require("../models/Profile");
 
 // @route POST /auth/register
 // @desc Register user
@@ -13,22 +12,47 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     last_name,
     phone_number,
     email,
-    account_type,
+    // account_type,
+    is_tenant,
+    admin_type,
+    loginType,
     password,
     property,
     unit,
   } = JSON.parse(req.body.data);
+  console.log(
+    "REG",
+    first_name,
+    last_name,
+    phone_number,
+    email,
+    // account_type,
+    is_tenant,
+    admin_type,
+    loginType,
+    password,
+    property,
+    unit
+  );
+  if (
+    loginType !== "staff" &&
+    (admin_type === "owner" || admin_type === "admin")
+  ) {
+    res.status(400);
+    throw new Error("staff only, owner or admin");
+  }
 
   const emailExists = await User.findOne({ email });
+  if (emailExists) {
+    res.status(400);
+    throw new Error("A user with that email already exists");
+  }
 
-  // if (emailExists) {
-  //   res.status(400);
-  //   throw new Error("A user with that email already exists");
-  // }
   let group;
-  if (account_type === "owner") {
+  if (loginType === "staff" && admin_type === "owner") {
     group = await Group.create({});
   }
+
   let groupId = group ? group._id : req.user.group;
 
   const user = await User.create({
@@ -36,7 +60,9 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     last_name,
     phone_number,
     email,
-    account_type,
+    is_tenant,
+    admin_type,
+    // account_type,
     password,
     image_url: req.file ? req.file.path : null,
     group: groupId,
@@ -44,7 +70,7 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 
   if (user) {
     let tenant;
-    if (account_type === "tenant") {
+    if (is_tenant) {
       tenant = await Tenant.create({
         user: user._id,
         property,
@@ -53,7 +79,7 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
       });
       tenant.populate("user");
     }
-    if (account_type === "owner") {
+    if (admin_type === "owner") {
       const token = generateToken(user._id, groupId, user.admin_type, "staff");
       const secondsInWeek = 604800;
       res.cookie("token", token, {
@@ -62,8 +88,8 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
         sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
         secure: process.env.NODE_ENV === "development" ? false : true,
       });
+      user.set("login_type", loginType, { strict: false });
     }
-    user.set("login_type", loginType, { strict: false });
 
     if (tenant) {
       user.set("tenant", tenant, { strict: false });
@@ -88,17 +114,18 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 // @desc Login user
 // @access Public
 exports.loginUser = asyncHandler(async (req, res, next) => {
-  console.log(req.body);
   const { email, password, loginType } = req.body;
   const user = await User.findOne({ email });
+  let loggedin_acct;
+
   if (user && (await user.matchPassword(password))) {
-    const token = generateToken(
-      user._id,
-      user.group,
-      user.admin_type,
-      loginType
-    );
-    console.log(loginType, token);
+    if (loginType === "tenant" && user.is_tenant) {
+      loggedin_acct = "tenant";
+    }
+    if (loginType === "staff" && user.admin_type !== "none") {
+      loggedin_acct = user.admin_type;
+    }
+    const token = generateToken(user._id, user.group, loggedin_acct);
     const secondsInWeek = 604800;
 
     res.cookie("token", token, {
@@ -107,9 +134,9 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
       sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
       secure: process.env.NODE_ENV === "development" ? false : true,
     });
-    user.set("login_type", loginType, { strict: false });
+    user.set("loggedin_acct", loggedin_acct, { strict: false });
     // if (user.account_type === "tenant") {
-    if (loginType === "tenant" && user.is_Tenant) {
+    if (loginType === "tenant" && user.is_tenant) {
       const tenant = await Tenant.findOne({ user: user._id }).populate({
         path: "unit",
       });
@@ -134,12 +161,13 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
 // @access Private
 exports.loadUser = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user._id);
-  console.log(req);
   if (!user) {
     res.status(401);
     throw new Error("Not authorized");
   }
-  if (user.account_type === "tenant") {
+  user.set("loggedin_acct", req.user.loggedin_acct, { strict: false });
+
+  if (user.loggedin_acct === "tenant") {
     const tenant = await Tenant.findOne({ user: user._id }).populate({
       path: "unit",
     });
@@ -180,7 +208,9 @@ exports.editUser = asyncHandler(async (req, res) => {
     last_name,
     phone_number,
     email,
-    account_type,
+    // account_type,
+    is_tenant,
+    admin_type,
     password,
     property,
     unit,
@@ -193,7 +223,8 @@ exports.editUser = asyncHandler(async (req, res) => {
     last_name,
     phone_number,
     email,
-    account_type,
+    is_tenant,
+    admin_type,
     password,
   };
 
@@ -203,7 +234,9 @@ exports.editUser = asyncHandler(async (req, res) => {
   user.last_name = last_name || user.last_name;
   user.phone_number = phone_number || user.phone_number;
   user.email = email || user.email;
-  user.account_type = account_type || user.account_type;
+  // user.account_type = account_type || user.account_type;
+  user.is_tenant = is_tenant || user.is_tenant;
+  user.admin_type = admin_type || user.admin_type;
   user.property = property || user.property;
   user.image_url = image_url || user.image_url;
   user.password = password || user.password;
@@ -234,7 +267,7 @@ exports.editUser = asyncHandler(async (req, res) => {
   await user.save();
 
   let tenant;
-  if (account_type === "tenant") {
+  if (user.is_tenant) {
     tenant = await Tenant.findByIdAndUpdate(
       tenant_id,
       { property, unit },

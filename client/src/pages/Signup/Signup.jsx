@@ -10,7 +10,7 @@ export default function Signup() {
       <CssBaseline />
 
       <Grid container direction="column" sx={{ mt: 2 }} spacing={2}>
-        <UserFormReg label="owner" initValues={{ account_type: "owner" }} />
+        <UserFormReg label="owner" initValues={{ loginType: "staff" }} />
       </Grid>
     </Container>
   );

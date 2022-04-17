@@ -6,7 +6,7 @@ exports.validateRegister = [
     "password",
     "Please enter a password with 3 or more characters"
   ).isLength({
-    min: 3,
+    min: 2,
   }),
   (req, res, next) => {
     const errors = validationResult(req);

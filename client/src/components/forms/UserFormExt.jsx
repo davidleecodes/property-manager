@@ -7,6 +7,8 @@ import { useSnackBar } from "../../context/useSnackbarContext";
 import { submittedForm } from "./formHelper";
 import UserFormBase from "./UserFormBase";
 import FormikSelectField from "./FormikSelectField";
+import FormikSwitch from "./FormikSwitch";
+import FormikRadioBtns from "./FormikRadioBtns";
 import { getProperties } from "../../helpers/APICalls/property";
 
 export default function UserFormExt({ current, handleCancel, initalProperty }) {
@@ -15,6 +17,7 @@ export default function UserFormExt({ current, handleCancel, initalProperty }) {
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
   const [propertyData, setPropertyData] = useState([]);
 
+  console.log(current, handleCancel, "ININT", initalProperty);
   useEffect(() => {
     if (initalProperty) {
       setPropertyData([initalProperty]);
@@ -25,15 +28,25 @@ export default function UserFormExt({ current, handleCancel, initalProperty }) {
     }
   }, [initalProperty]);
 
+  const acct_types = {
+    none: "none",
+    owner: "owner",
+    admin: "admin",
+    super: "super",
+  };
   const initialValues = {
-    account_type: "tenant",
+    // account_type: "tenant",
     property: "",
     unit: "",
+    is_tenant: false,
+    admin_type: "",
   };
 
   if (current) {
     initialValues.property = current.tenant.property._id;
     initialValues.unit = current.tenant.unit._id;
+    initialValues.is_tenant = current.is_tenant;
+    initialValues.admin_type = current.admin_type;
   }
   if (initalProperty) {
     initialValues.property = initalProperty._id;
@@ -42,6 +55,8 @@ export default function UserFormExt({ current, handleCancel, initalProperty }) {
   const validationSchema = {
     property: Yup.string().required("property is required"),
     unit: Yup.string().required("unit is required"),
+    is_tenant: Yup.boolean(),
+    admin_type: Yup.string(),
   };
 
   function handleSubmit(values, { setSubmitting }) {
@@ -106,6 +121,12 @@ export default function UserFormExt({ current, handleCancel, initalProperty }) {
           itemValue={(item) => item._id}
           itemLabel={(item) => item.name}
         />
+        <FormikSwitch label="is Tenant" formikKey={"is_tenant"}></FormikSwitch>
+        <FormikRadioBtns
+          label="admin_type"
+          formikKey={"admin_type"}
+          options={acct_types}
+        ></FormikRadioBtns>
       </Grid>
     </>
   );

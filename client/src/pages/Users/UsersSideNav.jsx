@@ -8,6 +8,16 @@ import { DefaultUserImage } from "../../images/images";
 import CssBaseline from "@mui/material/CssBaseline";
 
 export default function UserSideNav({ selectedId, data }) {
+  const tenantAdminText = (user) => {
+    const tenantText = user.is_tenant ? "tenant" : "";
+    const splitText =
+      user.is_tenant && user.admin_type && user.admin_type !== "none"
+        ? " | "
+        : "";
+    const adminText =
+      user.admin_type && user.admin_type !== "none" ? user.admin_type : "";
+    return `${tenantText} ${splitText} ${adminText} `;
+  };
   const itemContent = (user) => (
     <React.Fragment>
       <CssBaseline />
@@ -30,7 +40,7 @@ export default function UserSideNav({ selectedId, data }) {
               variant="body2"
               color="text.primary"
             >
-              {user.account_type}
+              {tenantAdminText(user)}
             </Typography>
           </React.Fragment>
         }
@@ -48,7 +58,7 @@ export default function UserSideNav({ selectedId, data }) {
 
   const collapsedText = {
     primary: (item) => `${item.first_name} ${item.last_name}`,
-    secondary: (item) => `${item.account_type}`,
+    secondary: (item) => `${tenantAdminText(item)}`,
   };
   return (
     <SideNav

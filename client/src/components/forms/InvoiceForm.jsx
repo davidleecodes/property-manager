@@ -29,7 +29,7 @@ export default function InvoiceForm({ current, handleCancel, tenantList }) {
   const { updateSnackBarMessage } = useSnackBar();
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
 
-  const isTenant = loggedInUser.account_type === acct.tenant;
+  const isTenant = loggedInUser.loggedin_acct === acct.tenant;
   console.log(current);
   const initialValues = {
     tenant: "",
